@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_autumnium_alloy": {
+      "conditions": {
+        "items": [
+          {
+            "items": "anvilcraft_dearpluscelestialreforge:autumnium_alloy"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "anvilcraft_dearpluscelestialreforge:autumnium_alloy_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_autumnium_alloy"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "anvilcraft_dearpluscelestialreforge:autumnium_alloy_block"
+    ]
+  }
+}
