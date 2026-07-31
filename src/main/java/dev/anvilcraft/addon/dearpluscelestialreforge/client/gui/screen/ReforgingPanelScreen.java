@@ -4,20 +4,44 @@ import dev.anvilcraft.addon.dearpluscelestialreforge.init.ReforgingFilter;
 import dev.anvilcraft.addon.dearpluscelestialreforge.inventory.ReforgingPanelMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ReforgingPanelScreen extends AbstractContainerScreen<ReforgingPanelMenu> {
+    private static final ResourceLocation BACKGROUND =
+            ResourceLocation.parse("anvilcraft:textures/gui/backgrounds.png");
+    private static final int BG_U = 176;
+    private static final int BG_V = 231;
+    private static final int BG_W = 176;
+    private static final int BG_H = 78;
+    private static final int BG_TEX_W = 512;
+    private static final int BG_TEX_H = 512;
+    private static final ResourceLocation BUTTON_CANCEL =
+        ResourceLocation.parse("anvilcraft:textures/gui/machine/cancel.png");
+    private static final ResourceLocation BUTTON_CONFIRM =
+        ResourceLocation.parse("anvilcraft:textures/gui/machine/confirm.png");
+
     private static final int GUI_WIDTH = 220;
     private static final int GUI_HEIGHT = 195;
-    private static final int ROW_HEIGHT = 28;
-    private static final int CHECKBOX_WIDTH = 60;
-    private static final int VALUE_BTN_WIDTH = 100;
+    private static final int ROW_HEIGHT = 23;
+    private static final int RIGHT_PAD = 10;
+    private static final int LEFT_PAD = 7;
+    private static final int CHECKBOX_SIZE = 16;
+    private static final int VALUE_W = 64;
+    private static final int BTN_H = 16;
+    private static final int BG_REL_X = (GUI_WIDTH - BG_W) / 2;
+    private static final int BG_REL_Y = (GUI_HEIGHT - BG_H) / 2;
+    private static final int TITLE_X = BG_REL_X + LEFT_PAD;
+    private static final int CHECKBOX_X = BG_REL_X + BG_W - VALUE_W - RIGHT_PAD - RIGHT_PAD - CHECKBOX_SIZE;
+    private static final int VALUE_X = BG_REL_X + BG_W - VALUE_W - RIGHT_PAD;
+    private static final int ROW_START_Y = BG_REL_Y + 6;
 
-    private Button[] valueButtons;
-    private CheckboxButton[] checkboxButtons;
+    private TextButton[] valueButtons;
+    private ImageButton[] checkboxButtons;
+    private int[] lastCheckboxStates;
+    private String[] lastValueTexts;
 
     public ReforgingPanelScreen(ReforgingPanelMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
@@ -31,85 +55,78 @@ public class ReforgingPanelScreen extends AbstractContainerScreen<ReforgingPanel
         int left = leftPos;
         int top = topPos;
         ReforgingFilter[] filters = ReforgingFilter.values();
-        valueButtons = new Button[filters.length];
-        checkboxButtons = new CheckboxButton[filters.length];
+        valueButtons = new TextButton[filters.length];
+        checkboxButtons = new ImageButton[filters.length];
+        lastCheckboxStates = new int[filters.length];
+        lastValueTexts = new String[filters.length];
+        var filterData = menu.getFilterData();
 
         for (int i = 0; i < filters.length; i++) {
-            int y = top + 18 + i * ROW_HEIGHT;
+            int y = top + ROW_START_Y + i * ROW_HEIGHT;
             int ordinal = i;
             ReforgingFilter filter = filters[i];
-            var filterData = menu.getFilterData();
 
-            // 勾选框（参与/不参与筛选）
-            checkboxButtons[i] = new CheckboxButton(
-                left + 6, y, 80, 20,
-                isEnabled(ordinal),
+            // 参与/不参与筛选按钮（图片按钮，垂直居中于行）
+            int cbY = y + (BTN_H - CHECKBOX_SIZE) / 2;
+            checkboxButtons[i] = new ImageButton(
+                left + CHECKBOX_X, cbY, CHECKBOX_SIZE, CHECKBOX_SIZE,
+                isEnabled(ordinal) ? BUTTON_CONFIRM : BUTTON_CANCEL,
                 btn -> {
-                    // 乐观更新本地数据
                     int idx = ordinal * 2;
                     filterData.set(idx, filterData.get(idx) == 0 ? 1 : 0);
-                    // 发送到服务端
                     minecraft.gameMode.handleInventoryButtonClick(menu.containerId, ordinal);
                 }
             );
             addRenderableWidget(checkboxButtons[i]);
 
-            // 值循环按钮
-            valueButtons[i] = Button.builder(
-                    Component.literal(getValueText(ordinal)),
-                    btn -> {
-                        // 乐观更新本地数据（正向）
-                        int idx = ordinal * 2 + 1;
-                        int cur = filterData.get(idx);
-                        int max = filter.getMaxValue();
-                        filterData.set(idx, (cur + 1) % (max + 1));
-                        // 发送到服务端
-                        minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 10 + ordinal);
-                    }
-                )
-                .bounds(left + 88, y, VALUE_BTN_WIDTH, 20)
-                .tooltip(Tooltip.create(Component.translatable(
-                    "gui.reforging_panel.cycle_" + filter.getSerializedName())))
-                .build();
+            // 值循环按钮（材质背景+文本）
+            valueButtons[i] = new TextButton(
+                left + VALUE_X, y, VALUE_W, BTN_H,
+                getValueText(ordinal),
+                btn -> {
+                    int idx = ordinal * 2 + 1;
+                    int cur = filterData.get(idx);
+                    int max = filter.getMaxValue();
+                    filterData.set(idx, (cur + 1) % (max + 1));
+                    minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 10 + ordinal);
+                }
+            );
             addRenderableWidget(valueButtons[i]);
         }
 
-        // 保存按钮
-        addRenderableWidget(Button.builder(
-                Component.translatable("gui.reforging_panel.save"),
-                btn -> onClose()
-            )
-            .bounds(left + 70, top + GUI_HEIGHT - 28, 60, 20)
-            .build()
-        );
+        // 配置在每次点击筛选按钮时自动保存，按E/Esc退出即可
     }
 
     @Override
     protected void containerTick() {
         super.containerTick();
-        // 每 tick 同步按钮文本（处理 DataSlot 同步后的更新 + 首次打开时的初始同步）
         for (int i = 0; i < valueButtons.length; i++) {
-            if (valueButtons[i] != null) {
-                valueButtons[i].setMessage(Component.literal(getValueText(i)));
+            // 仅当勾选状态变化时更新复选框纹理
+            int curEnabled = isEnabled(i) ? 1 : 0;
+            if (checkboxButtons[i] != null && lastCheckboxStates[i] != curEnabled) {
+                lastCheckboxStates[i] = curEnabled;
+                checkboxButtons[i].updateTexture(curEnabled == 1 ? BUTTON_CONFIRM : BUTTON_CANCEL);
             }
-            if (checkboxButtons[i] != null) {
-                checkboxButtons[i].updateState(isEnabled(i));
+            // 仅当值文本变化时更新按钮文本
+            if (valueButtons[i] != null) {
+                String curText = getValueText(i);
+                if (!curText.equals(lastValueTexts[i])) {
+                    lastValueTexts[i] = curText;
+                    valueButtons[i].updateText(curText);
+                }
             }
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // 右键点击值按钮 → 反向循环
         if (button == 1) {
             for (int i = 0; i < valueButtons.length; i++) {
                 if (valueButtons[i] != null && valueButtons[i].isMouseOver(mouseX, mouseY)) {
-                    // 乐观更新本地数据（反向）
                     int idx = i * 2 + 1;
                     int cur = menu.getFilterData().get(idx);
                     int max = ReforgingFilter.values()[i].getMaxValue();
                     menu.getFilterData().set(idx, (cur - 1 + max + 1) % (max + 1));
-                    // 发送到服务端
                     minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 20 + i);
                     return true;
                 }
@@ -126,11 +143,9 @@ public class ReforgingPanelScreen extends AbstractContainerScreen<ReforgingPanel
                 int cur = menu.getFilterData().get(idx);
                 int max = ReforgingFilter.values()[i].getMaxValue();
                 if (scrollY > 0) {
-                    // 上滚 → 正向
                     menu.getFilterData().set(idx, (cur + 1) % (max + 1));
                     minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 10 + i);
                 } else {
-                    // 下滚 → 反向
                     menu.getFilterData().set(idx, (cur - 1 + max + 1) % (max + 1));
                     minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 20 + i);
                 }
@@ -142,20 +157,22 @@ public class ReforgingPanelScreen extends AbstractContainerScreen<ReforgingPanel
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        // 背景由 AbstractContainerScreen.render() 自动渲染（含 AnvilCraft Mixin）
+        int bgLeft = leftPos + (GUI_WIDTH - BG_W) / 2;
+        int bgTop = topPos + (GUI_HEIGHT - BG_H) / 2;
+        guiGraphics.blit(BACKGROUND, bgLeft, bgTop, BG_U, BG_V, BG_W, BG_H, BG_TEX_W, BG_TEX_H);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         ReforgingFilter[] filters = ReforgingFilter.values();
+        int titleAreaWidth = CHECKBOX_X - TITLE_X;
         for (int i = 0; i < filters.length; i++) {
-            int y = 20 + i * ROW_HEIGHT;
-            // 条件名称（左对齐，在勾选框上方）
-            guiGraphics.drawString(this.font,
-                Component.translatable("gui.reforging_panel.filter_" + filters[i].getSerializedName()),
-                6, y + 2, 0x404040, false);
+            int ty = ROW_START_Y + i * ROW_HEIGHT + (BTN_H - 8) / 2;
+            Component text = Component.translatable("gui.reforging_panel.filter_" + filters[i].getSerializedName());
+            int textW = this.font.width(text);
+            int tx = TITLE_X + (titleAreaWidth - textW) / 2;
+            guiGraphics.drawString(this.font, text, tx, ty, 0xFFFFFF, false);
         }
-
     }
 
     @Override
@@ -175,45 +192,69 @@ public class ReforgingPanelScreen extends AbstractContainerScreen<ReforgingPanel
         return menu.getFilterData().get(ordinal * 2) != 0;
     }
 
-    private Component getCheckboxMessage(int ordinal) {
-        return isEnabled(ordinal)
-            ? Component.literal("§a☑ ").append(Component.translatable("gui.reforging_panel.participate"))
-            : Component.literal("§7☐ ").append(Component.translatable("gui.reforging_panel.not_participate"));
-    }
-
     private String getValueText(int ordinal) {
         int idx = ordinal * 2 + 1;
         int value = menu.getFilterData().get(idx);
         ReforgingFilter filter = ReforgingFilter.values()[ordinal];
         String langKey = ReforgingFilter.getValueDisplayName(filter, value);
         String text = Component.translatable(langKey).getString();
-
-        // 如果是翻译键本身（说明没有翻译），直接显示英文名
         if (text.equals(langKey)) {
             return langKey.replace("gui.reforging_panel.", "");
         }
         return text;
     }
 
-    // ========== 自定义勾选框按钮 ==========
+    // ========== 材质背景文本按钮 ==========
 
-    private static class CheckboxButton extends Button {
-        private final java.util.function.BooleanSupplier stateSupplier;
+    private static class TextButton extends Button {
+        private Component text;
+        private static final ResourceLocation TEXTURE =
+            ResourceLocation.parse("anvilcraft_dearpluscelestialreforge:textures/gui/button_cycle.png");
 
-        public CheckboxButton(int x, int y, int width, int height, boolean checked, OnPress onPress) {
+        public TextButton(int x, int y, int width, int height, String text, OnPress onPress) {
+            super(x, y, width, height, Component.literal(text), onPress, DEFAULT_NARRATION);
+            this.text = Component.literal(text);
+        }
+
+        public void updateText(String newText) {
+            this.text = Component.literal(newText);
+            setMessage(this.text);
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            // 材质上下分半：上半＝默认，下半＝悬停（仅鼠标悬停）
+            int vOffset = isHovered() ? height : 0;
+            guiGraphics.blit(TEXTURE, getX(), getY(), 0, vOffset, width, height, width, height * 2);
+            // 在材质之上居中绘制文本
+            var font = net.minecraft.client.Minecraft.getInstance().font;
+            int textW = font.width(text);
+            int color = isHovered() ? 0xFFFFA0 : 0xFFFFFF;
+            guiGraphics.drawString(font, text,
+                getX() + (width - textW) / 2,
+                getY() + (height - 8) / 2 - 1, color, false);
+        }
+    }
+
+    // ========== 图片按钮 ==========
+
+    private static class ImageButton extends Button {
+        private ResourceLocation texture;
+
+        public ImageButton(int x, int y, int width, int height, ResourceLocation texture, OnPress onPress) {
             super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
-            this.stateSupplier = () -> checked;
-            setMessage(getDisplayMessage(checked));
+            this.texture = texture;
         }
 
-        public void updateState(boolean newChecked) {
-            setMessage(getDisplayMessage(newChecked));
+        public void updateTexture(ResourceLocation newTexture) {
+            this.texture = newTexture;
         }
 
-        private static Component getDisplayMessage(boolean checked) {
-            return checked
-                ? Component.literal("§a☑ ").append(Component.translatable("gui.reforging_panel.participate"))
-                : Component.literal("§7☐ ").append(Component.translatable("gui.reforging_panel.not_participate"));
+        @Override
+        protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            // 材质上下分半：上半＝默认，下半＝悬停（仅鼠标悬停）
+            int vOffset = isHovered() ? height : 0;
+            guiGraphics.blit(texture, getX(), getY(), 0, vOffset, width, height, width, height * 2);
         }
     }
 }

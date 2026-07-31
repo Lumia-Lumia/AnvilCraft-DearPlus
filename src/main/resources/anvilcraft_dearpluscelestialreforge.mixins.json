@@ -4,7 +4,6 @@
   "package": "dev.anvilcraft.addon.dearpluscelestialreforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CelestialForgingAnvilBlockEntityMixin"
   ],
   "client": [
   ],

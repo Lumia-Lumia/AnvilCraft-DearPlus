@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=north,powered=false": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface"
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel"
     },
     "facing=east,powered=false": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface",
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel",
       "y": 90
     },
     "facing=south,powered=false": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface",
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel",
       "y": 180
     },
     "facing=west,powered=false": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface",
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel",
       "y": 270
     },
     "facing=north,powered=true": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface_active"
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel_active"
     },
     "facing=east,powered=true": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface_active",
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel_active",
       "y": 90
     },
     "facing=south,powered=true": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface_active",
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel_active",
       "y": 180
     },
     "facing=west,powered=true": {
-      "model": "anvilcraft:block/celestial_forging_anvil_logistics_interface_active",
+      "model": "anvilcraft_dearpluscelestialreforge:block/reforging_panel_active",
       "y": 270
     }
   }

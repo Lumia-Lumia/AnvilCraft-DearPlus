@@ -46,10 +46,6 @@ public class ReforgingFilterData {
         conditions.put(filter, new Condition(c.enabled(), value));
     }
 
-    public Map<ReforgingFilter, Condition> getAll() {
-        return conditions.clone();
-    }
-
     /**
      * 序列化到 NBT
      */
