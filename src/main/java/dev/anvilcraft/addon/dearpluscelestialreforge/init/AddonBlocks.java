@@ -4,6 +4,8 @@ import dev.anvilcraft.addon.dearpluscelestialreforge.AnvilCraftDearPlusCelestial
 import dev.anvilcraft.addon.dearpluscelestialreforge.block.ReforgingPanelBlock;
 import dev.anvilcraft.lib.v2.registrum.providers.RegistrumRecipeProvider;
 import dev.anvilcraft.lib.v2.registrum.util.entry.BlockEntry;
+import dev.dubhe.anvilcraft.init.block.ModBlocks;
+import dev.dubhe.anvilcraft.init.item.ModItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -64,6 +66,21 @@ public class AddonBlocks {
             .model((ctx, prov) -> {})
             .build()
         .lang("Reforging Panel")
+        .recipe((ctx, prov) -> {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.getEntry(), 2)
+                .pattern("QJQ")
+                .pattern("CSG")
+                .pattern("QHQ")
+                .define('Q', AddonItems.AUTUMNIUM_ALLOY.get())
+                .define('J', ModBlocks.STRUCTURE_SCANNER.get())
+                .define('C', ModItems.DISK.get())
+                .define('S', ModBlocks.SPACETIME_SUPERCOMPUTER.get())
+                .define('G', ModItems.FILTER.get())
+                .define('H', ModBlocks.REDSTONE_WIRE.get())
+                .unlockedBy("has_structure_scanner",
+                    RegistrumRecipeProvider.has(ModBlocks.STRUCTURE_SCANNER.get()))
+                .save(prov);
+        })
         .register();
 
     public static void register() {

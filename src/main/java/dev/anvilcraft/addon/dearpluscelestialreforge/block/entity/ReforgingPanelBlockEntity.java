@@ -51,10 +51,6 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
         setChanged();
     }
 
-    public boolean isEmitting() {
-        return isEmitting;
-    }
-
     public void markRedstoneDirty() {
         redstoneCheckTick = 0;
     }
@@ -65,18 +61,31 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
         if (level == null || level.isClientSide()) return;
         Level lvl = level;
 
-        // 递减冷却
-        if (reforgeCooldown > 0) reforgeCooldown--;
-
         // 红石缓存刷新
         redstoneCheckTick--;
         if (redstoneCheckTick <= 0) {
-            hasRedstoneSignal = lvl.hasNeighborSignal(worldPosition);
+            hasRedstoneSignal = false;
+            for (Direction dir : Direction.Plane.HORIZONTAL) {
+                if (hasHorizontalSignal(lvl, worldPosition, dir)) {
+                    hasRedstoneSignal = true;
+                    break;
+                }
+            }
             redstoneCheckTick = REDSTONE_CACHE_TICKS;
         }
 
+        // 完全空闲时快速返回，避免多余开销
+        if (!hasRedstoneSignal && !isEmitting && reforgeCooldown <= 0) {
+            setPowered(false);
+            return;
+        }
+
+        // 递减冷却
+        if (reforgeCooldown > 0) reforgeCooldown--;
+
+        // 有红石信号时始终启用 active 模型
+        setPowered(hasRedstoneSignal);
         if (!hasRedstoneSignal) {
-            // 无红石信号：停止发射
             setEmitting(false);
             return;
         }
@@ -86,40 +95,39 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
 
         CelestialForgingAnvilBlockEntity cfaController = findCfaController();
         if (cfaController == null) {
-            // 找不到 CFA → 发射信号表示错误
-            setEmitting(true);
-            return;
-        }
-
-        ICelestialForgingAnvilAccessor cfaAccess = (ICelestialForgingAnvilAccessor) cfaController;
-
-        // 如果 CFA 正在搜索中，等待
-        if (cfaAccess.cfaIsSearching()) {
             setEmitting(false);
             return;
         }
 
-        CelestialBodyData body = cfaAccess.cfaGetBodyData();
-        PlanetaryResourceSet resources = cfaAccess.cfaGetResourceSet();
+        CelestialBodyData body = cfaController.getEffectiveBodyDataForRendering();
+        PlanetaryResourceSet resources = cfaController.getPlanetaryResourceSet();
 
-        // 判断当前天体是否匹配筛选条件
         boolean matches = matchesFilter(body, resources);
 
         if (matches) {
-            // 匹配 → 发射红石信号（通知已找到目标）
+            cfaController.setLocked(true);
             setEmitting(true);
         } else {
-            // 不匹配 → 尝试重锻
-            // 检查是否可以重锻（有砧子数、未锁定）
             if (canReforge(cfaController)) {
+                cfaController.setLocked(false);
                 cfaController.startSearch();
                 reforgeCooldown = REFORGE_COOLDOWN;
                 setEmitting(false);
             } else {
-                // 无法重锻 → 发射错误信号
-                setEmitting(true);
+                cfaController.setLocked(false);
+                setEmitting(false);
             }
         }
+    }
+
+    /** 检查水平方向是否有信号（弱充能或强充能） */
+    private boolean hasHorizontalSignal(Level level, BlockPos pos, Direction dir) {
+        BlockPos neighborPos = pos.relative(dir);
+        // 同时检查正反两方向，兼容不同红石源的输出方向约定
+        return level.getSignal(neighborPos, dir) > 0
+            || level.getSignal(neighborPos, dir.getOpposite()) > 0
+            || level.getDirectSignal(neighborPos, dir) > 0
+            || level.getDirectSignal(neighborPos, dir.getOpposite()) > 0;
     }
 
     // ========== 筛选比对 ==========
@@ -134,26 +142,17 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
             boolean conditionMet = switch (filter) {
                 case MAGNETIC_FIELD -> body.magneticFieldStrength() == cond.value();
                 case ROTATION_SPEED -> body.rotationSpeed() == cond.value();
-                case TEMPERATURE -> {
-                    if (!(body instanceof RockyPlanetData rocky)) yield false;
-                    yield rocky.temperature().ordinal() == cond.value();
-                }
-                case FLUID_COVERAGE -> {
-                    if (!(body instanceof RockyPlanetData rocky)) yield false;
-                    yield rocky.liquidCoverage().ordinal() == cond.value();
-                }
                 case RESOURCE -> {
                     if (resources == null) yield false;
                     boolean hasBiological = !resources.getBiologicalItems().isEmpty()
                         || !resources.getBiologicalFluids().isEmpty();
-                    boolean hasOffering = !resources.getOfferings().isEmpty();
-                    boolean hasWasteland = !resources.getWastelandItems().isEmpty();
-                    boolean hasCivilization = hasOffering || hasWasteland;
+                    boolean hasCivilization = !resources.getOfferings().isEmpty()
+                        || !resources.getWastelandItems().isEmpty();
                     yield switch (cond.value()) {
-                        case 0 -> !hasBiological && !hasCivilization; // 无
-                        case 1 -> hasBiological;                       // 生物资源
-                        case 2 -> hasCivilization;                     // 文明资源
-                        case 3 -> hasBiological || hasCivilization;    // 任意资源
+                        case 0 -> !hasBiological && !hasCivilization;
+                        case 1 -> hasBiological;
+                        case 2 -> hasCivilization;
+                        case 3 -> hasBiological || hasCivilization;
                         default -> false;
                     };
                 }
@@ -201,6 +200,18 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
 
     // ========== 红石发射管理 ==========
 
+    private void setPowered(boolean powered) {
+        if (level != null) {
+            BlockState state = level.getBlockState(worldPosition);
+            boolean current = state.getValue(
+                dev.anvilcraft.addon.dearpluscelestialreforge.block.ReforgingPanelBlock.POWERED);
+            if (current != powered) {
+                level.setBlock(worldPosition, state.setValue(
+                    dev.anvilcraft.addon.dearpluscelestialreforge.block.ReforgingPanelBlock.POWERED, powered), 3);
+            }
+        }
+    }
+
     private void setEmitting(boolean emitting) {
         if (this.isEmitting != emitting) {
             this.isEmitting = emitting;
@@ -208,8 +219,7 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
             if (level != null) {
                 BlockState state = level.getBlockState(worldPosition);
                 level.setBlock(worldPosition, state.setValue(
-                    dev.anvilcraft.addon.dearpluscelestialreforge.block.ReforgingPanelBlock.POWERED, emitting
-                ), 3);
+                    dev.anvilcraft.addon.dearpluscelestialreforge.block.ReforgingPanelBlock.EMITTING, emitting), 3);
                 // 通知邻居更新红石信号
                 level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
             }

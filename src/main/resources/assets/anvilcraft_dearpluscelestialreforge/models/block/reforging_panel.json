@@ -7,9 +7,10 @@
 	"textures": {
 		"0": "anvilcraft:block/celestial_forging_anvil_interface",
 		"3": "anvilcraft:block/transcendium_block_outline",
-		"4": "anvilcraft:block/red_cement",
+		"4": "anvilcraft_dearpluscelestialreforge:block/redstone_wire_line_inactive",
 		"5": "anvilcraft:block/redstone_wire_line",
-		"7": "anvilcraft_dearpluscelestialreforge:block/reforging_panel"
+		"7": "anvilcraft_dearpluscelestialreforge:block/reforging_panel",
+		"particle": "anvilcraft:block/celestial_forging_anvil_particle"
 	},
 	"elements": [
 		{

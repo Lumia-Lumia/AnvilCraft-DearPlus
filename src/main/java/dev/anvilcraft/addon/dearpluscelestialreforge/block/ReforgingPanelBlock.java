@@ -39,6 +39,7 @@ import java.util.List;
 public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final MapCodec<ReforgingPanelBlock> CODEC = simpleCodec(ReforgingPanelBlock::new);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty EMITTING = BlockStateProperties.ENABLED;
 
     // 物流接口碰撞箱（朝北）
     private static final VoxelShape NORTH_SHAPE = ShapeUtil.merge(
@@ -49,9 +50,11 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
         new AABB(3, 0, 0, 13, 1.75, 2),
         new AABB(5, 0, -2, 11, 1.75, 0),
         new AABB(7, 0, -4, 9, 1.75, -2),
-        new AABB(4, 4, 0, 12, 12, 8),
         new AABB(4, 8, 6, 12, 16, 14),
-        new AABB(5, 12, 1, 11, 18, 7)
+        new AABB(5, 7, 1, 11, 13, 7),
+        new AABB(3, 14, 5, 13, 17, 8),
+        new AABB(3, 17, 8, 13, 19, 10),
+        new AABB(3, 19, 10, 13, 22, 13)
     );
     private static final VoxelShape EAST_SHAPE = ShapeUtil.rotate(Direction.Axis.Y, 270, NORTH_SHAPE);
     private static final VoxelShape SOUTH_SHAPE = ShapeUtil.rotate(Direction.Axis.Y, 180, NORTH_SHAPE);
@@ -61,7 +64,8 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
             .setValue(FACING, Direction.NORTH)
-            .setValue(POWERED, false));
+            .setValue(POWERED, false)
+            .setValue(EMITTING, false));
     }
 
     @Override
@@ -71,7 +75,7 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(FACING, POWERED));
+        super.createBlockStateDefinition(builder.add(FACING, POWERED, EMITTING));
     }
 
     @Override
@@ -163,15 +167,6 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
         if (!level.isClientSide()) {
-            // 检查锻星砧是否还在旁边，不在则自毁
-            Direction cfaDir = state.getValue(FACING).getOpposite();
-            if (pos.relative(cfaDir).equals(neighborPos)) {
-                BlockState cfaState = level.getBlockState(neighborPos);
-                if (!cfaState.is(ModBlocks.CELESTIAL_FORGING_ANVIL)) {
-                    level.destroyBlock(pos, true);
-                    return;
-                }
-            }
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof ReforgingPanelBlockEntity panel) {
                 panel.markRedstoneDirty();
@@ -188,15 +183,8 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        if (!state.getValue(POWERED)) return 0;
-        // 仅向上方和锻星砧方向释放强度3的红石信号
-        Direction cfaDir = state.getValue(FACING).getOpposite();
-        return (direction == Direction.DOWN || direction == state.getValue(FACING)) ? 3 : 0;
-    }
-
-    @Override
-    protected int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return getSignal(state, level, pos, direction);
+        if (!state.getValue(EMITTING)) return 0;
+        return (direction == Direction.DOWN || direction == Direction.UP || direction == state.getValue(FACING)) ? 3 : 0;
     }
 
     // ========== BlockEntity ==========

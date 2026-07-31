@@ -1,0 +1,33 @@
+{
+  "block.anvilcraft_dearpluscelestialreforge.autumnium_alloy_block": "秋枫合金块",
+  "block.anvilcraft_dearpluscelestialreforge.reforging_panel": "重锻面板",
+  "item.anvilcraft_dearpluscelestialreforge.autumnium_alloy": "秋枫合金",
+  "container.anvilcraft_dearpluscelestialreforge.reforging_panel": "重锻面板",
+  "itemGroup.anvilcraft_dearpluscelestialreforge.addon_items": "铁砧工艺鹿+：天辰重锻",
+
+  "gui.reforging_panel.filter_magnetic_field": "天体磁场",
+  "gui.reforging_panel.filter_rotation_speed": "天体转速",
+  "gui.reforging_panel.filter_resource": "行星特殊资源",
+
+  "gui.reforging_panel.magnetic.none": "无",
+  "gui.reforging_panel.magnetic.barely": "几乎没有",
+  "gui.reforging_panel.magnetic.weak": "弱",
+  "gui.reforging_panel.magnetic.medium": "中等",
+  "gui.reforging_panel.magnetic.strong": "强",
+  "gui.reforging_panel.magnetic.very_strong": "非常强",
+
+  "gui.reforging_panel.speed.very_slow": "非常慢",
+  "gui.reforging_panel.speed.slow": "慢",
+  "gui.reforging_panel.speed.medium": "中等",
+  "gui.reforging_panel.speed.fast": "快",
+  "gui.reforging_panel.speed.very_fast": "非常快",
+
+  "gui.reforging_panel.resource.none": "无",
+  "gui.reforging_panel.resource.biological": "生物资源",
+  "gui.reforging_panel.resource.civilization": "文明资源",
+  "gui.reforging_panel.resource.any": "任意资源",
+
+  "block.anvilcraft_dearpluscelestialreforge.autumnium_alloy_block.desc": "一大块充满了秋之魔力的复合材料",
+  "block.anvilcraft_dearpluscelestialreforge.reforging_panel.desc": "激活后能自动重锻星辰，可使用GUI调整筛选项",
+  "item.anvilcraft_dearpluscelestialreforge.autumnium_alloy.desc": "一块充满了秋之魔力的复合材料"
+}
