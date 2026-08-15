@@ -86,7 +86,10 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
         // 有红石信号时始终启用 active 模型
         setPowered(hasRedstoneSignal);
         if (!hasRedstoneSignal) {
+            boolean wasEmitting = isEmitting;
             setEmitting(false);
+            // 解除激活时释放对锻星砧的锁定（已有巨构则保留）
+            if (wasEmitting) releaseCfaLock();
             return;
         }
 
@@ -108,13 +111,12 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
             cfaController.setLocked(true);
             setEmitting(true);
         } else {
+            releaseCfaLock(cfaController);
             if (canReforge(cfaController)) {
-                cfaController.setLocked(false);
                 cfaController.startSearch();
                 reforgeCooldown = REFORGE_COOLDOWN;
                 setEmitting(false);
             } else {
-                cfaController.setLocked(false);
                 setEmitting(false);
             }
         }
@@ -183,6 +185,22 @@ public class ReforgingPanelBlockEntity extends BlockEntity implements MenuProvid
             }
         }
         return null;
+    }
+
+    /**
+     * 释放面板对锻星砧的锁定。若锻星砧已建造巨构则不解锁，避免面板解锁破坏巨构。
+     */
+    public void releaseCfaLock() {
+        CelestialForgingAnvilBlockEntity cfaController = findCfaController();
+        if (cfaController != null) releaseCfaLock(cfaController);
+    }
+
+    /**
+     * 释放面板对锻星砧的锁定（使用已查到的控制器）。已有巨构时不解锁。
+     */
+    private void releaseCfaLock(CelestialForgingAnvilBlockEntity cfaController) {
+        if (cfaController.getActiveMegastructureIndex() >= 0) return;
+        cfaController.setLocked(false);
     }
 
     /**

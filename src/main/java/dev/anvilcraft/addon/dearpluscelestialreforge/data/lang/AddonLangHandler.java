@@ -9,6 +9,18 @@ public class AddonLangHandler {
     public static void init(RegistrumLangProvider provider) {
         ConfigData.readConfigClass(provider, AddonConfig.class);
 
+        // Affixes（格式参考铁砧工艺：词条名 + 冒号 + 描述）
+        provider.add("affix.anvilcraft_dearpluscelestialreforge.tranquil",
+            "Tranquil: Cannot be enchanted or disenchanted; all enchantments are disabled");
+        provider.add("affix.anvilcraft_dearpluscelestialreforge.vying",
+            "Vying %s: Enchanting costs no experience; boosts rare drops with level");
+        provider.add("affix.anvilcraft_dearpluscelestialreforge.chopper",
+            "Chopper %s: Makes the sword deal more damage");
+        provider.add("affix.anvilcraft_dearpluscelestialreforge.decapitator",
+            "Decapitator %s: Beheading effect independent of the Beheading enchantment");
+        provider.add("affix.anvilcraft_dearpluscelestialreforge.dispossessor",
+            "Dispossessor %s: Increases the amount of drops");
+
         // GUI title
         provider.add("container.anvilcraft_dearpluscelestialreforge.reforging_panel", "Reforging Panel");
 
@@ -45,5 +57,18 @@ public class AddonLangHandler {
             "A large block filled with autumn magic");
         provider.add("block.anvilcraft_dearpluscelestialreforge.reforging_panel.desc",
             "Automatically reforges celestial bodies when activated. Configure filters via GUI");
+
+        provider.add("item.anvilcraft_dearpluscelestialreforge.autumnium_resonator.desc",
+            "Compatible with all tool types. Hold right-click to resonate-mine most blocks. Cannot switch tool types");
+        provider.add("item.anvilcraft_dearpluscelestialreforge.autumnium_ionocraft.desc",
+            "Grants creative flight when worn\nConsumes durability over time, like an elytra");
+        provider.add("item.anvilcraft_dearpluscelestialreforge.ringed_autumnium_broadsword_3.desc",
+            "A Chinese greatsword with the True Sweep property");
+        provider.add("item.anvilcraft_dearpluscelestialreforge.ringed_autumnium_broadsword_5.desc",
+            "A Chinese greatsword with the True Sweep property");
+        provider.add("item.anvilcraft_dearpluscelestialreforge.ringed_autumnium_broadsword_7.desc",
+            "A Chinese greatsword with the True Sweep property");
+        provider.add("item.anvilcraft_dearpluscelestialreforge.ringed_autumnium_broadsword_9.desc",
+            "A Chinese greatsword with the True Sweep property");
     }
 }

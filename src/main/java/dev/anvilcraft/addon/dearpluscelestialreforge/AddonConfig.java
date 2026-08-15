@@ -6,13 +6,7 @@ import dev.anvilcraft.lib.v2.config.Config;
 
 @Config(name = AnvilCraftDearPlusCelestialReforge.MOD_ID)
 public class AddonConfig {
-    @Comment("Whether to log the dirt block on common setup")
-    public boolean logDirtBlock = false;
-
-    @Comment("A magic number")
-    @BoundedDiscrete(max = 24, min = 2)
-    public int magicNumber = 2;
-
-    @Comment("What you want the introduction message to be for the magic number")
-    public String magicNumberIntroduction = "";
+    @Comment("How to display affix levels: 0 = mixed (Roman for ≤ 10, Arabic for > 10), 1 = all Roman, 2 = all Arabic")
+    @BoundedDiscrete(max = 2, min = 0)
+    public int affixNumberStyle = 0;
 }

@@ -4,8 +4,20 @@
   "package": "dev.anvilcraft.addon.dearpluscelestialreforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ItemEnchantabilityMixin",
+    "GrindstoneMenuMixin",
+    "EnchantmentMenuMixin",
+    "AnvilMenuMixin",
+    "AnvilMenuResultMixin",
+    "PlayerMixin",
+    "LivingEntitySweepMixin",
+    "ItemStackTooltipMixin",
+    "LootItemRandomChanceWithEnchantedBonusConditionVyingMixin"
   ],
   "client": [
+    "WheelLifecycleEventListenerMixin",
+    "MinecraftAttackMixin",
+    "EnchantmentScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

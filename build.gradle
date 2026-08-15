@@ -54,4 +54,3 @@ lombok {
 tasks.withType(ProcessResources).configureEach {
     duplicatesStrategy = DuplicatesStrategy.WARN
 }
-sourceSets.main.resources { srcDir 'src/generated/resources' }

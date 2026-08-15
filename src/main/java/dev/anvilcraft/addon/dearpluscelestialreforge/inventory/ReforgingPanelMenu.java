@@ -1,5 +1,6 @@
 package dev.anvilcraft.addon.dearpluscelestialreforge.inventory;
 
+import dev.anvilcraft.addon.dearpluscelestialreforge.block.ReforgingPanelBlock;
 import dev.anvilcraft.addon.dearpluscelestialreforge.block.entity.ReforgingPanelBlockEntity;
 import dev.anvilcraft.addon.dearpluscelestialreforge.init.ModMenuTypes;
 import dev.anvilcraft.addon.dearpluscelestialreforge.init.ReforgingFilter;
@@ -110,6 +111,10 @@ public class ReforgingPanelMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        // 面板方块仍在且玩家在交互范围内（8 格），否则 GUI 关闭
+        return blockEntity != null
+            && blockEntity.getLevel() != null
+            && blockEntity.getBlockState().getBlock() instanceof ReforgingPanelBlock
+            && player.canInteractWithBlock(blockEntity.getBlockPos(), 8.0F);
     }
 }

@@ -75,7 +75,9 @@ public class ReforgingFilterData {
             String typeName = tag.getString("type");
             for (ReforgingFilter filter : ReforgingFilter.values()) {
                 if (filter.getSerializedName().equals(typeName)) {
-                    data.set(filter, tag.getBoolean(TAG_ENABLED), tag.getInt(TAG_VALUE));
+                    // 校验值范围，防止损坏/篡改的 NBT 越界
+                    int value = Math.clamp(tag.getInt(TAG_VALUE), 0, filter.getMaxValue());
+                    data.set(filter, tag.getBoolean(TAG_ENABLED), value);
                     break;
                 }
             }

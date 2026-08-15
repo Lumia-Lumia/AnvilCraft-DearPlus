@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import dev.anvilcraft.addon.dearpluscelestialreforge.block.entity.ReforgingPanelBlockEntity;
 import dev.anvilcraft.addon.dearpluscelestialreforge.init.ModBlockEntities;
 import dev.anvilcraft.lib.v2.util.ShapeUtil;
+import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.block.cfa.CelestialForgingAnvilBlock;
 import dev.dubhe.anvilcraft.block.state.Cube323PartHalf;
 import dev.dubhe.anvilcraft.init.block.ModBlocks;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock, IHammerRemovable {
     public static final MapCodec<ReforgingPanelBlock> CODEC = simpleCodec(ReforgingPanelBlock::new);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty EMITTING = BlockStateProperties.ENABLED;
@@ -174,6 +175,18 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
         }
     }
 
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        // 面板被破坏/锤拆时释放对锻星砧的锁定（已有巨构则保留），避免锁定残留
+        if (!level.isClientSide() && !state.is(newState.getBlock())) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof ReforgingPanelBlockEntity panel) {
+                panel.releaseCfaLock();
+            }
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
     // ========== 红石输出 ==========
 
     @Override
@@ -183,6 +196,9 @@ public class ReforgingPanelBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        // 注意：getSignal 的 direction 参数方向约定容易搞反（见交接文档会话 2「红石逻辑迭代」）。
+        // 此处向锻星砧方向（FACING 侧）及上下两面输出强度 3 的弱充能信号，
+        // 此写法经实际测试验证正确，勿随意改动方向。
         if (!state.getValue(EMITTING)) return 0;
         return (direction == Direction.DOWN || direction == Direction.UP || direction == state.getValue(FACING)) ? 3 : 0;
     }

@@ -21,6 +21,7 @@ public class AddonItemGroups {
         "addon_items",
         () -> CreativeModeTab.builder()
             .icon(AddonItems.AUTUMNIUM_ALLOY::asStack)
+            // 物品由 REGISTRUM.defaultCreativeTab 自动填充到该标签页
             .displayItems((ctx, entries) -> {
             })
             .title(
