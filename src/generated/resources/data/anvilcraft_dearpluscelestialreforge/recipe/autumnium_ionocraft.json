@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:feather"
+    },
+    "B": {
+      "item": "anvilcraft_dearpluscelestialreforge:autumnium_alloy_block"
+    },
+    "C": {
+      "item": "anvilcraft:copper_pressure_plate"
+    },
+    "D": {
+      "item": "minecraft:leather_chestplate"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "ABA",
+    "CDC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "anvilcraft_dearpluscelestialreforge:autumnium_ionocraft"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "anvilcraft_dearpluscelestialreforge:autumnium_heating",
+  "ingredients": [
+    {
+      "items": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_5"
+    },
+    {
+      "items": "#anvilcraft_dearpluscelestialreforge:is_broadsword_ring_component",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_7"
+    }
+  ],
+  "hasCauldron": {
+    "fluid": "minecraft:empty"
+  },
+  "target": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_7"
+}

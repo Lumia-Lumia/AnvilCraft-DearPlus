@@ -1,0 +1,15 @@
+{
+  "type": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_repair",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadswords"
+    },
+    {
+      "item": "anvilcraft_dearpluscelestialreforge:autumnium_alloy_block"
+    }
+  ],
+  "result": {
+    "id": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_3"
+  }
+}

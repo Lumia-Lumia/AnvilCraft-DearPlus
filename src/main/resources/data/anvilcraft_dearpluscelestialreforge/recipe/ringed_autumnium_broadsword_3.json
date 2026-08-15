@@ -1,0 +1,26 @@
+{
+  "type": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_crafting",
+  "category": "equipment",
+  "pattern": [
+    "  A",
+    "BAC",
+    "DCC"
+  ],
+  "key": {
+    "A": {
+      "item": "anvilcraft_dearpluscelestialreforge:autumnium_alloy_block"
+    },
+    "B": {
+      "item": "minecraft:leather"
+    },
+    "C": {
+      "tag": "anvilcraft_dearpluscelestialreforge:is_broadsword_ring_component"
+    },
+    "D": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_3"
+  }
+}
