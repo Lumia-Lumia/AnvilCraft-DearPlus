@@ -7,7 +7,7 @@
 
 [![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://spdx.org/licenses/LGPL-3.0-only.html)
 [![Modrinth downloads](https://img.shields.io/modrinth/dt/anvilcraft-dearplus?color=00AF5C&label=Modrinth%20downloads&logo=modrinth)](https://modrinth.com/mod/anvilcraft-dearplus)
-[![CurseForge downloads](https://img.shields.io/badge/CurseForge-coming%20soon-orange)](https://www.curseforge.com/)
+[![CurseForge downloads](http://cf.way2muchnoise.eu/full_1654780_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/anvilcraft-dearplus)
 [![GitHub downloads](https://img.shields.io/github/downloads/Lumia-Lumia/AnvilCraft-DearPlus/total?label=Github%20downloads&logo=github)](https://github.com/Lumia-Lumia/AnvilCraft-DearPlus/releases)
 
 > Welcome to the page for the mod "AnvilCraft: DearPlus"! This mod is an addon for *AnvilCraft*, themed around the power of **autumn**. Main content includes:
@@ -22,8 +22,8 @@
 
 ## Usage License
 
-* Unless otherwise specified, the code is licensed under [LGPL-3.0](https://spdx.org/licenses/LGPL-3.0-only.html) by default
-* Unless otherwise specified, non-code assets are all-rights-reserved (ARR) by default
+* Unless otherwise specified, the code is licensed under the [LICENSE file (LGPL-3.0)](./LICENSE) by default
+* Unless otherwise specified, non-code assets are licensed under the [ASSETS_LICENSE file (ARR)](./ASSETS_LICENSE) by default
 
 ## Main Maintainer
 

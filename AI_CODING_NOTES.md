@@ -17,7 +17,9 @@
 | 3 `b0a3e4b9` | 2026-08-06 ~ 08-12 | 主开发：3 物品 + 5 词条 + 全套机制 | 完成，结尾遗留 3 个九环刀问题 |
 | 4 `d6467b96` | 2026-08-12 ~ 08-13 | 解决遗留问题、逐鹿免费用、命名重构、3D 模型 | 基本完成；结尾遗漏 3eb0b138 总结 |
 | 5 | 2026-08-13 ~ 08-15 | 版本更新、共振器/大环刀收尾、逐鹿设定重构、代码审查 | 完成，遗留审查报告 16高+17中 待修复 |
-| 6（当前） | 2026-08-15 ~ 08-16 | 代码审查修复（22 项）、攻击 6/7/8/12、共振器耐久 254/攻击 6、飘升机粒子复用本体+飞行同步、**完整重命名 AnvilCraft: DearPlus（mod id→anvilcraft_dearplus、包名/命名空间/手册目录全改）** | 基本完成 |
+| 6 | 2026-08-15 ~ 08-16 | 代码审查修复（22 项）、攻击 6/7/8/12、共振器耐久 254/攻击 6、飘升机粒子复用本体+飞行同步、**完整重命名 AnvilCraft: DearPlus（mod id→anvilcraft_dearplus、包名/命名空间/手册目录全改）** | 基本完成 |
+| 7（当前） | 2026-08-16 | 会话记录整理：历史会话 jsonl/附属目录/memory 从旧路径 `~/.claude/projects/...-CelestialReforge` 迁移至 `...-DearPlus` 并删除旧目录 | 完成 |
+| 8 | 2026-08-16 | 更新铁砧工艺至 `1.6.0+snapshot.2156`（AnvilLib 同步 `2.0.0+snapshot.506`），修复 `ModRegistries` API 变更导致的启动崩溃 | 完成 |
 
 ---
 
@@ -301,6 +303,56 @@
 - **共振器攻击 10→6**：`ResonatorItem.createAttributes` 实际攻击 = `1+attackDamage+tierBonus`，`BASE_ATTACK_DAMAGE` 7→3（`AutumniumResonatorItem`）
 - **飘升机粒子复用本体**：改用 `ModParticles.IONOCRAFT_BACKPACK_EXHAUST`（本体 `anvilon_air` 贴图 + 本体 provider），删除自建 `AddonParticles` / `AutumniumIonocraftExhaustParticle` / 贴图 / JSON
 
+### 6.9 会话 8：铁砧工艺更新至 1.6.0+snapshot.2156（2026-08-16）
+
+**需求**：更新铁砧工艺至最新 `1.6.0+snapshot.2156`；附属与其不兼容崩溃（崩溃报告 `D:\MC\minecraft-exported-crash-info-2026-08-16T13-29-20.zip`）。
+
+**崩溃根因**：AnvilCraft snapshot.2156 中 `ModRegistries` 类由 `dev.dubhe.anvilcraft.init.ModRegistries` **移到 `dev.dubhe.anvilcraft.init.registry.ModRegistries`**，且字段 `CUSTOM_DATA_TYPE_KEY` **重命名为 `CUSTOM_DATA_TYPE`**（类型由 `ResourceKey` 改为 `Registry` 实例）。附属 `ModCustomDataComponents.java` 仍引用旧包名旧字段 → `NoClassDefFoundError: dev/dubhe/anvilcraft/init/ModRegistries`。
+
+**修复**：
+- `gradle/libs.versions.toml`：anvilcraft `1.6.0+snapshot.2144` → `1.6.0+snapshot.2156`；anvillib `2.0.0+snapshot.500` → `2.0.0+snapshot.506`（与 AnvilCraft JarJar 内嵌版本一致，经 POM 确认）
+- `ModCustomDataComponents.java`：import 改 `init.registry.ModRegistries`、`CUSTOM_DATA_TYPE_KEY` 改 `CUSTOM_DATA_TYPE`
+- workflow：`ci.yml` / `pull_request.yml` 的 `extra-mods` 更新为 `anvilcraft:1.21.1-1.6.0+snapshot.2156`
+- config section key 变更：anvillib 506 将 config section 命名从 `anvilcraft_dearplus` 改为点分 `anvilcraft.dearplus`（`en_us`/`en_ud` 由 runData 自动更新）；手工维护的 `zh_cn.json` 中两行 `configuration.section.anvilcraft.dearplus.common.toml*` key 需手动同步，否则中文 config 标题不显示
+
+**验证**：`compileJava` / `runData` / `build` 全部通过；字节码确认引用新包新字段；两个指向 AnvilCraft 类的 mixin target（`AnvilMenuResult`、`WheelLifecycleEventListener`）在 2156 jar 中均存在。**版本号升至 `1.1.1`**（`gradle.properties` mod_version，区分已发布的 1.1.0），构建产物 `build/libs/anvilcraft_dearplus-neoforge-1.21.1-1.1.1.jar`。
+
+### 6.10 会话 8 续：JEI 崩溃 + 飘升机 tooltip 修复（2026-08-16）
+
+用户实测 1.1.1 发现两个问题并已修复：
+
+**1. JEI 显示冲压配方崩溃**（`ClassCastException: AutumniumStampingRecipe cannot be cast to StampingRecipe`）
+- 根因：AnvilCraft `StampingCategory.draw` 内有 `checkcast StampingRecipe`（`setRecipe` 用基类 `AbstractProcessRecipe` 可通过，但 `draw` 强转具体类）；附属配方注册在 `STAMPING_TYPE`，被 JEI 当 `StampingRecipe` 强转 → CCE
+- 修复：`AutumniumStampingRecipe` 由 `extends AbstractProcessRecipe<AutumniumStampingRecipe>` 改为 **`extends StampingRecipe`**
+  - 构造改为 `super(itemIngredients, List.of())`：**不把 results 传入 Property**——`AbstractProcessRecipe$Property.getOutcomes()` 会对每个 resultItem 自动生成 `SpawnItem`，传入会双刀
+  - 产物 offset 改回 `-0.25`（StampingRecipe 默认 -0.375，本项目 `context.getPos()` 基于 pos 非 pos.below()）
+  - `getSerializer()` 泛型由 `RecipeSerializer<AutumniumStampingRecipe>` 强转 `RecipeSerializer<StampingRecipe>`（unchecked）
+  - `getType()` 继承 StampingRecipe（已返回 STAMPING_TYPE）
+  - **执行回归修复**（用户实测 2026-08-16）：继承 StampingRecipe 后冲压执行物品消失无产物——`StampingRecipe` 构造在 `super()` 内用 `property.getOutcomes()` 生成 `InWorldRecipe.outcomes` 字段，且 `this.property` 字段在 super 后才赋值、`getOutcomes()` 是 extraOutcomes 的**拷贝**；构造体里 `addOutcome` 太晚 → `outcomes` 为空 → 无产物。修复：覆写 `assemble()`，`super.assemble`（predicates 消耗输入）后执行 `getProperty().getExtraOutcomes()`（词条合并 outcome）。执行入口 `InWorldRecipeManager.trigger` 调 `recipe.assemble`
+
+**2. 飘升机 tooltip 换行显示异常字符**
+- 现象：desc `"装备时允许创造飞行\n随时间消耗耐久，机制同鞘翅"` 的 `\n` 被渲染成异常字符（语言文件转义正确、MC `StringSplitter.LineBreakFinder` 本应处理 0x0A，但实测显示异常）
+- 修复：`AddonTooltipEventListener` 按 `\n` split 成**多行独立 Component**（`Component.literal(line)`），不依赖渲染层对 `\n` 的处理
+
+**3. AddonOutcomeTypes 注册实例统一**（H7 残留）
+- `AFFIX_MERGE` 注册 supplier 由 `Type::new` 改 **`() -> AutumniumAffixMergeOutcome.Type.INSTANCE`**，使 `getType()` 返回的实例与注册表一致，`IRecipeOutcome.Type.getId()` 不再返回 null
+
+**3. 高温熔炼配方 JEI 空流体槽位**（用户报告）
+- 现象：五环刀→七环刀配方 `ringed_autumnium_broadsword_5_to_7.json` 在 JEI 显示一个空的流体原料槽位（配方无流体）
+- 根因：JSON 的 `hasCauldron` 配置了 `{"fluid": "minecraft:empty"}`，AnvilCraft `AbstractLiquidCategory.setRecipe` 按 `hasCauldron.hasFluid()`（= `fluid.fluids().isPresent()`）决定显示输入流体槽位——empty 流体使 `fluids()` present → 显示空槽位
+- 修复：删除 JSON 的 `hasCauldron` 字段 → Serializer `HasCauldronSimple.CODEC.fieldOf("hasCauldron").orElse(HasCauldronSimple.empty().build())` 生效 → `EMPTY_PREDICATE`（=`FluidStackPredicate.builder().amount(0)`，`fluids()` empty）→ `hasFluid()`=false 不显示槽位；`requiresEmptyCauldron()`=true 仍匹配空炼药锅（功能不变）
+
+**4. 飘升机无法创造飞行**（用户报告，2026-08-16，**已回退，非本 mod 问题**）
+- 现象：生存模式穿胸甲槽，双击空格无法获得飞行能力
+- 尝试修复：曾改为服务端 `PlayerTickEvent.Post` + 物品类型判断管理 `CREATIVE_FLIGHT` modifier（与背包 `refreshFlight` 一致），但**用户实测发现并非本 mod 代码问题，而是与其他附属的兼容性问题** → **已回退修改**，恢复 `inventoryTick` + 引用比较原实现（`AutumniumIonocraftItem`、`AddonAffixEvents` 均还原）
+- 调查记录（供参考）：AnvilCraft 背包飞行只靠 `CREATIVE_FLIGHT` modifier（不设置 `Abilities.mayfly`，`IPlayerExtension.mayfly()` 读属性值）；`Inventory.tick()` 会遍历 armor 槽调用 `inventoryTick`；飘升机原实现理论上正确
+
+**避坑新增**：
+- AnvilCraft 冲压 JEI 分类 `StampingCategory.draw` 会强转 `StampingRecipe`（2026-08-16 确认，snapshot.2156 起）；附属注册到 `STAMPING_TYPE` 的配方类必须继承 `StampingRecipe`
+- `AbstractProcessRecipe$Property.getOutcomes()` 会对 resultItems 自动生成 `SpawnItem`，自定义 outcome 时**不要**把 results 放入 Property，避免白板产物
+- 无流体配方**不要**用 `hasCauldron: {"fluid": "minecraft:empty"}`（`hasFluid()` 误判 true，JEI 显示空流体槽位）；应缺省 hasCauldron 字段让 `empty()` 生效（`EMPTY_PREDICATE` 匹配空炼药锅且 `hasFluid()`=false）
+- 飘升机/背包飞行：`CREATIVE_FLIGHT` modifier 用 `IPlayerExtension.mayfly()` 驱动（检查 `Abilities.mayfly || 属性值 > 0`）。飘升机飞行若失效，**先排查与其他附属的兼容性**（2026-08-16 实测为环境问题），不要轻易改动 `AutumniumIonocraftItem` 原实现
+
 ## 七、最终功能清单
 
 ### 物品
@@ -386,7 +438,7 @@
 ## 十、当前状态与待办
 
 - ✅ 核心功能全部实现并验证（编译/服务器/客户端启动通过）
-- ✅ 铁砧工艺依赖已更新至 `1.6.0+snapshot.2144`（AnvilLib 同步 `2.0.0+snapshot.500`，与内嵌版本匹配；workflow extra-mods/发布依赖/mods.toml versionRange 均已同步，2026-08-13）
+- ✅ 铁砧工艺依赖已更新至 `1.6.0+snapshot.2156`（AnvilLib 同步 `2.0.0+snapshot.506`，与内嵌版本匹配；workflow extra-mods/发布依赖/mods.toml versionRange 均已同步；2026-08-13 更新至 2144，2026-08-16 更新至 2156）
 - ✅ 4 把刀模型已应用，GUI 显示当前值：`rotation [0,20,0], translation [-0.7,-0.55,0], scale 0.65`
 - ✅ 已补充会话 `3eb0b138`（基础物品 + 重锻面板）全部需求至本交接文档
 - ✅ 4 把刀物品栏渲染已确认（2026-08-13）

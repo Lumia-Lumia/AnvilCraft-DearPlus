@@ -8,7 +8,7 @@ import dev.anvilcraft.addon.dearplus.recipe.data.EternalMergeData;
 import dev.anvilcraft.addon.dearplus.recipe.data.TranquilToEnchantmentsData;
 import dev.anvilcraft.addon.dearplus.recipe.data.VyingMergeData;
 import dev.dubhe.anvilcraft.api.recipe.data.ICustomDataComponent;
-import dev.dubhe.anvilcraft.init.ModRegistries;
+import dev.dubhe.anvilcraft.init.registry.ModRegistries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -18,7 +18,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  */
 public class ModCustomDataComponents {
     private static final DeferredRegister<ICustomDataComponent.Type<?>> DF = DeferredRegister.create(
-        ModRegistries.CUSTOM_DATA_TYPE_KEY, AnvilCraftDearPlus.MOD_ID
+        ModRegistries.CUSTOM_DATA_TYPE, AnvilCraftDearPlus.MOD_ID
     );
 
     public static final DeferredHolder<ICustomDataComponent.Type<?>, BladeAffixesData.Type> BLADE_AFFIXES =

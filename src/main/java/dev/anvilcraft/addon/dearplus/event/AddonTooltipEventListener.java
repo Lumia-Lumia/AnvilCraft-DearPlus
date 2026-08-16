@@ -73,7 +73,12 @@ public class AddonTooltipEventListener {
         String key = stack.getItem().builtInRegistryHolder().key().location().toString();
         if (!key.startsWith(AnvilCraftDearPlus.MOD_ID)) return;
         String descKey = stack.getDescriptionId() + ".desc";
-        event.getToolTip().add(insertIndex, Component.translatable(descKey).withStyle(ChatFormatting.GRAY));
+        // 按换行符拆成多行 Component：不依赖渲染层对 \n 的换行处理，
+        // 避免换行符被渲染成异常字符（tooltip 每行是独立组件，保证多行正确显示）
+        String desc = Component.translatable(descKey).getString();
+        for (String line : desc.split("\n", -1)) {
+            event.getToolTip().add(insertIndex++, Component.literal(line).withStyle(ChatFormatting.GRAY));
+        }
     }
 
     /**

@@ -26,7 +26,7 @@ public final class AddonOutcomeTypes {
 
     /** 秋枫大环刀升级的词条合并结果 */
     public static final DeferredHolder<IRecipeOutcome.Type<?>, AutumniumAffixMergeOutcome.Type> AFFIX_MERGE =
-        DR.register("autumnium_affix_merge", AutumniumAffixMergeOutcome.Type::new);
+        DR.register("autumnium_affix_merge", () -> AutumniumAffixMergeOutcome.Type.INSTANCE);
 
     public static void register(IEventBus modEventBus) {
         DR.register(modEventBus);

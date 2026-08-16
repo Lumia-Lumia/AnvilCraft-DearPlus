@@ -44,7 +44,7 @@
   "item.anvilcraft_dearplus.autumnium_alloy.desc": "一块充满了秋之魔力的复合材料",
   "anvilcraft_dearplus.configuration.affix_number_style": "词条数字样式",
   "anvilcraft_dearplus.configuration.affix_number_style.tooltip": "词条等级显示方式：0 = 混合（≤10 用罗马数字，>10 用阿拉伯数字），1 = 全罗马数字，2 = 全阿拉伯数字",
-  "anvilcraft_dearplus.configuration.section.anvilcraft_dearplus.common.toml": "铁砧工艺：鹿+ 通用配置",
-  "anvilcraft_dearplus.configuration.section.anvilcraft_dearplus.common.toml.title": "铁砧工艺：鹿+ 通用配置",
+  "anvilcraft_dearplus.configuration.section.anvilcraft.dearplus.common.toml": "铁砧工艺：鹿+ 通用配置",
+  "anvilcraft_dearplus.configuration.section.anvilcraft.dearplus.common.toml.title": "铁砧工艺：鹿+ 通用配置",
   "anvilcraft_dearplus.configuration.title": "铁砧工艺：鹿+ 配置"
 }

@@ -7,7 +7,7 @@
 
 [![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://spdx.org/licenses/LGPL-3.0-only.html)
 [![Modrinth downloads](https://img.shields.io/modrinth/dt/anvilcraft-dearplus?color=00AF5C&label=Modrinth%20downloads&logo=modrinth)](https://modrinth.com/mod/anvilcraft-dearplus)
-[![CurseForge downloads](https://img.shields.io/badge/CurseForge-coming%20soon-orange)](https://www.curseforge.com/)
+[![CurseForge downloads](http://cf.way2muchnoise.eu/full_1654780_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/anvilcraft-dearplus)
 [![GitHub downloads](https://img.shields.io/github/downloads/Lumia-Lumia/AnvilCraft-DearPlus/total?label=Github%20downloads&logo=github)](https://github.com/Lumia-Lumia/AnvilCraft-DearPlus/releases)
 
 > 欢迎来到模组《铁砧工艺：鹿+》的页面！模组是《铁砧工艺》的附属，以**秋枫之力**为主题，主要内容有：
@@ -22,8 +22,8 @@
 
 ## 使用许可
 
-* 除非另有说明，否则代码默认许可为 [LGPL-3.0](https://spdx.org/licenses/LGPL-3.0-only.html)
-* 除非另有说明，否则非代码资产默认保留所有权利（ARR）
+* 除非另有说明，否则代码默认许可为 [LICENSE 文件(LGPL-3.0)](./LICENSE)
+* 除非另有说明，否则非代码资产默认许可为 [ASSETS_LICENSE 文件(ARR)](./ASSETS_LICENSE)
 
 ## 主要维护者
 
