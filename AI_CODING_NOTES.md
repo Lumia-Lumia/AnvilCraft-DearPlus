@@ -1,6 +1,6 @@
 # AI_CODING_NOTES
 
-铁砧工艺（AnvilCraft）附属 mod **AnvilCraft-DearPlus-CelestialReforge** 的完整开发记录与交接说明（含全部用户需求）。
+铁砧工艺（AnvilCraft）附属 mod **AnvilCraft: DearPlus** 的完整开发记录与交接说明（含全部用户需求）。
 
 - **环境**：Minecraft 1.21.1 + NeoForge，分支 `releases/1.21.1/1.6`
 - **参考**：https://github.com/Anvil-Dev/AnvilCraft
@@ -17,7 +17,7 @@
 | 3 `b0a3e4b9` | 2026-08-06 ~ 08-12 | 主开发：3 物品 + 5 词条 + 全套机制 | 完成，结尾遗留 3 个九环刀问题 |
 | 4 `d6467b96` | 2026-08-12 ~ 08-13 | 解决遗留问题、逐鹿免费用、命名重构、3D 模型 | 基本完成；结尾遗漏 3eb0b138 总结 |
 | 5 | 2026-08-13 ~ 08-15 | 版本更新、共振器/大环刀收尾、逐鹿设定重构、代码审查 | 完成，遗留审查报告 16高+17中 待修复 |
-| 6（当前） | 2026-08-15 | 代码审查修复（22 项）、攻击 6/7/8/12、共振器耐久 254/攻击 6、飘升机粒子复用本体+飞行同步 | 基本完成 |
+| 6（当前） | 2026-08-15 ~ 08-16 | 代码审查修复（22 项）、攻击 6/7/8/12、共振器耐久 254/攻击 6、飘升机粒子复用本体+飞行同步、**完整重命名 AnvilCraft: DearPlus（mod id→anvilcraft_dearplus、包名/命名空间/手册目录全改）** | 基本完成 |
 
 ---
 
@@ -36,7 +36,7 @@
 ### 3.1 秋枫合金与合金块（07-26 ~ 07-27）
 
 - 修复 Autumnium Alloy 名称不显示（承接会话 1）：
-  - 根因 1：mod ID 由 `anvilcraft_addon_template` 重命名为 `anvilcraft_dearpluscelestialreforge` 后未重新运行数据生成，`src/generated/resources` 仍是旧命名空间 → 运行 `./gradlew runData`
+  - 根因 1：mod ID 由 `anvilcraft_addon_template` 重命名为 `anvilcraft_dearplus` 后未重新运行数据生成，`src/generated/resources` 仍是旧命名空间 → 运行 `./gradlew runData`
   - 根因 2：缺少物品纹理 `textures/item/autumnium_alloy.png`，`runData` 报 `Texture ... does not exist` → 先用占位纹理复制
 - `example_block` → `autumnium_alloy_block`：完成注册、方块/物品模型、方块状态、战利品表
 - 配方：
@@ -107,7 +107,7 @@
 - 分支改名 `releases/1.21.1/1.6`
 
 **文档（ageratum 手册）：**
-- 中文：`assets/anvilcraft/ageratum/zh_cn/173_dearplus_celestial_reforge/`（`index.md` + `000_reforging_panel.md` 介绍重锻面板）
+- 中文：`assets/anvilcraft/ageratum/zh_cn/173_dearplus/`（`index.md` + `000_reforging_panel.md` 介绍重锻面板）
 - 英文：同结构 `en_us/` 版本
 
 **语言文件与 tooltip：**
@@ -116,7 +116,7 @@
   - 秋枫合金块：一大块充满了秋之魔力的复合材料
   - 重锻面板：激活后能自动重锻星辰，可使用GUI调整筛选项
 - tooltip 实现：`@EventBusSubscriber` 监听 `ItemTooltipEvent`（后参考 AnvilCraft PR 改为更简方式）
-- 物品组中文名："铁砧工艺鹿+：天辰重锻"
+- 物品组中文名："铁砧工艺：鹿+"
 - 清理：删除未使用条目、整理排序；确认并删除无用的生成版 `en_us.json` / `en_ud.json`
 
 **07-31 代码审查清理：**
@@ -363,22 +363,22 @@
 20. **`TieredItem` 不覆写 `isCorrectToolForDrops`**：默认按 `Tool` 组件的 `minesAndDrops` 规则判断，**不校验 tier 等级**。`ResonatorItem`（AnvilCraft）同样未覆写 → 会误挖黑曜石/远古残骸并掉落。自建工具需像 `PickaxeItem` 一样覆写该方法，结合 `getTier().getIncorrectBlocksForDrops()` 判断等级（秋枫共振器 2026-08-14 已修）。
 21. **`Enchantments.SWEEPING_EDGE` 是 `ResourceKey` 不是 `Holder`**：取附魔等级需 `level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(...)` 再 `stack.getEnchantmentLevel(holder)`。
 22. **`StreamCodec.unit(...)` 编码校验引用相等**：配方运行时创建的新实例与 unit 实例不同会抛 `Can't encode ... expected ...`。无字段类应改用 `StreamCodec.of((buf, v) -> {}, buf -> new X())`（编码写空、解码返回新实例）；`MapCodec.unit` 的 encode 不校验，可安全用于无字段类（九环刀合并 modifier 2026-08-14 已修）。
-23. **AddonConfig 配置格式**（`dev.anvilcraft.lib.v2.config`，`AddonConfig.java`，运行时经 `AnvilCraftDearPlusCelestialReforge.CONFIG` 读取）：`@Config(name=MOD_ID)` 类 + 字段 `@Comment("...")`；boolean 直接 `public boolean xxx = false;`；受限整数加 `@BoundedDiscrete(max=, min=)`；字符串 `public String xxx = "";`（模板自带的 `logDirtBlock`/`magicNumber`/`magicNumberIntroduction` 示例已删除，仅保留 `affixNumberStyle`）。词条等级罗马/阿拉伯显示由 `util/AffixNumberFormat` 处理（混合/全罗马/全阿拉伯）。
+23. **AddonConfig 配置格式**（`dev.anvilcraft.lib.v2.config`，`AddonConfig.java`，运行时经 `AnvilCraftDearPlus.CONFIG` 读取）：`@Config(name=MOD_ID)` 类 + 字段 `@Comment("...")`；boolean 直接 `public boolean xxx = false;`；受限整数加 `@BoundedDiscrete(max=, min=)`；字符串 `public String xxx = "";`（模板自带的 `logDirtBlock`/`magicNumber`/`magicNumberIntroduction` 示例已删除，仅保留 `affixNumberStyle`）。词条等级罗马/阿拉伯显示由 `util/AffixNumberFormat` 处理（混合/全罗马/全阿拉伯）。
 19. **模型体积差异 = 格式**：Blockbench 紧凑单行 vs 展开多行（每个数组元素一行）可差近一倍；压成紧凑格式（数组内联、面单行）能缩小文件且 JSON 合法，注意**不能有尾逗号**。
 
 ---
 
 ## 九、当前文件状态
 
-- 4 把刀模型：`src/main/resources/assets/anvilcraft_dearpluscelestialreforge/models/item/ringed_autumnium_broadsword_{3,5,7,9}.json`（紧凑格式，`parent` 指向公共 display 父模型 `ringed_autumnium_broadsword_display.json`；2026-08-13 重构，消除重复 display，4 刀+父模型 50.6KB → 31.3KB）
+- 4 把刀模型：`src/main/resources/assets/anvilcraft_dearplus/models/item/ringed_autumnium_broadsword_{3,5,7,9}.json`（紧凑格式，`parent` 指向公共 display 父模型 `ringed_autumnium_broadsword_display.json`；2026-08-13 重构，消除重复 display，4 刀+父模型 50.6KB → 31.3KB）
 - 刀贴图：`textures/item/ringed_autumnium_broadsword.png`（32x32）
 - 飘升机：穿戴用 AnvilCraft 飘升机背包模型（`AutumniumIonocraftItem.getHumanoidArmorModel`）+ `textures/entity/equipment/autumnium_ionocraft.png`（64×32）；物品图标 `textures/item/autumnium_ionocraft.png`（16×16）；`getArmorTexture` 返回设备贴图
 - 新增 mixin：`AnvilMenuResultMixin`、`EnchantmentScreenMixin`
 - 修改 mixin：`AnvilMenuMixin`、`EnchantmentMenuMixin`、`PlayerMixin`、`GrindstoneMenuMixin` 等
 - 核心：`AddonComponents`、`AffixHelper`、`BladeAffixes`、`AddonTagHandler`、`AddonRecipeHandler`
 - 重锻面板：`block/ReforgingPanelBlock.java`、`block/entity/ReforgingPanelBlockEntity.java`、`inventory/ReforgingFilter(Data).java`、`inventory/ReforgingPanelMenu.java`、`client/gui/screen/ReforgingPanelScreen.java`、`init/ModBlockEntities.java`、`init/ModMenuTypes.java`
-- 重锻面板资源：`blockstates/reforging_panel.json`、`models/`、`textures/`、`assets/anvilcraft/ageratum/zh_cn|en_us/173_dearplus_celestial_reforge/`
-- ageratum 手册（2026-08-14 整理完整，`assets/anvilcraft/ageratum/zh_cn|en_us/173_dearplus_celestial_reforge/`）：`index.md`（总览）+ `000_alloy`（秋枫合金/合金块）+ `001_resonator` + `002_ionocraft` + `003_broadsword`（四档属性/锻造升级/真实横扫/亡灵特攻）+ `004_affixes`（词条）+ `005_reforging_panel`（重锻面板，会话 6 由 001 移至末章）
+- 重锻面板资源：`blockstates/reforging_panel.json`、`models/`、`textures/`、`assets/anvilcraft/ageratum/zh_cn|en_us/173_dearplus/`
+- ageratum 手册（2026-08-14 整理完整，`assets/anvilcraft/ageratum/zh_cn|en_us/173_dearplus/`）：`index.md`（总览）+ `000_alloy`（秋枫合金/合金块）+ `001_resonator` + `002_ionocraft` + `003_broadsword`（四档属性/锻造升级/真实横扫/亡灵特攻）+ `004_affixes`（词条）+ `005_reforging_panel`（重锻面板，会话 6 由 001 移至末章）
 - 代码审查报告（2026-08-15）：`CODE_REVIEW_REPORT.md`（根目录）——16 高 + 17 中 + 多项低严重度隐患，含修复进度核对表（⬜/🔧/✅），修复时可对照勾选
 
 ---

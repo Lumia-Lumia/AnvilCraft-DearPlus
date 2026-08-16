@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_autumnium_resonator": {
+      "conditions": {
+        "items": [
+          {
+            "items": "anvilcraft_dearplus:autumnium_resonator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "anvilcraft_dearplus:autumnium_resonator_repair"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_autumnium_resonator"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "anvilcraft_dearplus:autumnium_resonator_repair"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "anvilcraft_dearplus:autumnium_heating",
+  "ingredients": [
+    {
+      "items": "anvilcraft_dearplus:ringed_autumnium_broadsword_5"
+    },
+    {
+      "items": "#anvilcraft_dearplus:is_broadsword_ring_component",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "anvilcraft_dearplus:ringed_autumnium_broadsword_7"
+    }
+  ],
+  "hasCauldron": {
+    "fluid": "minecraft:empty"
+  },
+  "target": "anvilcraft_dearplus:ringed_autumnium_broadsword_7"
+}

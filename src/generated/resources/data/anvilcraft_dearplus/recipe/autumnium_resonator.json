@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "anvilcraft_dearplus:autumnium_alloy"
+    },
+    "B": {
+      "item": "anvilcraft_dearplus:autumnium_alloy_block"
+    },
+    "C": {
+      "item": "minecraft:lightning_rod"
+    }
+  },
+  "pattern": [
+    "AB ",
+    " C ",
+    " A "
+  ],
+  "result": {
+    "count": 1,
+    "id": "anvilcraft_dearplus:autumnium_resonator"
+  }
+}

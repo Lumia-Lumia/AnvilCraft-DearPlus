@@ -2,14 +2,14 @@
   "type": "anvilcraft:two_to_one_smithing",
   "inputs": [
     {
-      "items": "#anvilcraft_dearpluscelestialreforge:is_broadsword_ring_component"
+      "items": "#anvilcraft_dearplus:is_broadsword_ring_component"
     },
     {
-      "items": "#anvilcraft_dearpluscelestialreforge:is_broadsword_ring_component"
+      "items": "#anvilcraft_dearplus:is_broadsword_ring_component"
     }
   ],
   "material": {
-    "items": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_7"
+    "items": "anvilcraft_dearplus:ringed_autumnium_broadsword_7"
   },
   "modifiers": [
     {
@@ -17,25 +17,25 @@
       "types": [
         {
           "type": "anvilcraft:normal_data_component",
-          "component": "anvilcraft_dearpluscelestialreforge:blade_affixes",
+          "component": "anvilcraft_dearplus:blade_affixes",
           "input": "material"
         },
         {
-          "type": "anvilcraft_dearpluscelestialreforge:blade_affixes",
+          "type": "anvilcraft_dearplus:blade_affixes",
           "input": "input.0"
         },
         {
-          "type": "anvilcraft_dearpluscelestialreforge:blade_affixes",
+          "type": "anvilcraft_dearplus:blade_affixes",
           "input": "input.1"
         },
         {
-          "type": "anvilcraft_dearpluscelestialreforge:tranquil_to_enchantments",
+          "type": "anvilcraft_dearplus:tranquil_to_enchantments",
           "input": "material"
         }
       ]
     }
   ],
-  "result": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_9",
+  "result": "anvilcraft_dearplus:ringed_autumnium_broadsword_9",
   "template": {
     "items": "anvilcraft:two_to_one_smithing_template"
   }

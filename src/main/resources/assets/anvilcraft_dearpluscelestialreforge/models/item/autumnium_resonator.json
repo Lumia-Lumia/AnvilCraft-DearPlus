@@ -1,6 +1,0 @@
-{
-  "parent": "anvilcraft:item/ember_metal_resonator",
-  "textures": {
-    "1": "anvilcraft_dearpluscelestialreforge:item/autumnium_gear"
-  }
-}

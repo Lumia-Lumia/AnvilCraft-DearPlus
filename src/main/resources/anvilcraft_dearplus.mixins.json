@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.anvilcraft.addon.dearplus.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ItemEnchantabilityMixin",
+    "GrindstoneMenuMixin",
+    "EnchantmentMenuMixin",
+    "AnvilMenuMixin",
+    "AnvilMenuResultMixin",
+    "PlayerMixin",
+    "LivingEntitySweepMixin",
+    "ItemStackTooltipMixin",
+    "LootItemRandomChanceWithEnchantedBonusConditionVyingMixin"
+  ],
+  "client": [
+    "WheelLifecycleEventListenerMixin",
+    "MinecraftAttackMixin",
+    "EnchantmentScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

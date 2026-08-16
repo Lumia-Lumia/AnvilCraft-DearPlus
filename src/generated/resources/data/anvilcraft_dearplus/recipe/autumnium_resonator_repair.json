@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "anvilcraft_dearplus:autumnium_resonator"
+    },
+    {
+      "item": "anvilcraft_dearplus:autumnium_alloy_block"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "anvilcraft_dearplus:autumnium_resonator"
+  }
+}

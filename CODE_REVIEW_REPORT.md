@@ -1,6 +1,6 @@
 # 代码审查报告
 
-- **项目**：AnvilCraft-DearPlus-CelestialReforge（Minecraft 1.21.1 + NeoForge 21.1.241，分支 `releases/1.21.1/1.6`）
+- **项目**：AnvilCraft: DearPlus（Minecraft 1.21.1 + NeoForge 21.1.241，分支 `releases/1.21.1/1.6`）
 - **日期**：2026-08-15
 - **范围**：`src/main/java` 全部 70+ 文件（含构建/资源/语言一致性），由 4 组并行审查 Agent + 全局补充完成
 - **用途**：记录所有潜在隐患点，供后续修复与进度核对
@@ -97,7 +97,7 @@
   - 问题：ThreadLocal（`ATTACKING`/`CLIENT_ATTACKING`）在 HEAD 置 true、RETURN 置 false，**无 try/finally**。`startAttack`/`attack` 中途异常即永久卡 true，横扫特性全局失效至重启。
   - 建议：用 `WrapOperation`/`finally` 保证复位。
 
-- **H15** ⬜〔已决策：不改，保持 defaultRequire=1 崩溃式报错（require=0 会导致静默失效更糟）+ 版本范围无界〕`anvilcraft_dearpluscelestialreforge.mixins.json`
+- **H15** ⬜〔已决策：不改，保持 defaultRequire=1 崩溃式报错（require=0 会导致静默失效更糟）+ 版本范围无界〕`anvilcraft_dearplus.mixins.json`
   - 类型：低兼容
   - 问题：`required: true` + `defaultRequire: 1` + `overwrites.requireAnnotations`。12 个 mixin 任一注入点不匹配（含对 AnvilCraft 私有方法的注入）即**加载崩溃**，无降级容错。
   - 建议：低风险注入用 `require=0` 或拆分 mixin config；文档/CI 固定 AnvilCraft 版本。

@@ -2,10 +2,10 @@
   "type": "anvilcraft:two_to_one_smithing",
   "inputs": [
     {
-      "items": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_9"
+      "items": "anvilcraft_dearplus:ringed_autumnium_broadsword_9"
     },
     {
-      "items": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_9"
+      "items": "anvilcraft_dearplus:ringed_autumnium_broadsword_9"
     }
   ],
   "material": {
@@ -16,21 +16,21 @@
       "type": "anvilcraft:merge_data",
       "types": [
         {
-          "type": "anvilcraft_dearpluscelestialreforge:double_blade_affixes"
+          "type": "anvilcraft_dearplus:double_blade_affixes"
         },
         {
-          "type": "anvilcraft_dearpluscelestialreforge:eternal_merge"
+          "type": "anvilcraft_dearplus:eternal_merge"
         },
         {
-          "type": "anvilcraft_dearpluscelestialreforge:enchantment_max_merge"
+          "type": "anvilcraft_dearplus:enchantment_max_merge"
         },
         {
-          "type": "anvilcraft_dearpluscelestialreforge:vying_merge"
+          "type": "anvilcraft_dearplus:vying_merge"
         }
       ]
     }
   ],
-  "result": "anvilcraft_dearpluscelestialreforge:ringed_autumnium_broadsword_9",
+  "result": "anvilcraft_dearplus:ringed_autumnium_broadsword_9",
   "template": {
     "items": "anvilcraft:two_to_one_smithing_template"
   }
