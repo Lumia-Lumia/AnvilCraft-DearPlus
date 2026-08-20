@@ -1,0 +1,52 @@
+{
+  "type": "anvilcraft:special_celestial_body",
+  "axial_tilt": 30.0,
+  "energy": 5,
+  "has_atmosphere": false,
+  "liquid_coverage": "low",
+  "magnetic_field": 0,
+  "mass": 1,
+  "model": "anvilcraft_dearplus:block/celestial_body/planet_mole",
+  "name": "mole_of_moles",
+  "needs_custom_model": true,
+  "resources": {
+    "fluids": [
+      {
+        "id": "anvilcraft:oil",
+        "weight": 100
+      },
+      {
+        "id": "anvilcraft:primordial_matter",
+        "weight": 100
+      }
+    ],
+    "minerals": [
+      {
+        "id": "anvilcraft:rotten_flesh_block",
+        "weight": 45
+      },
+      {
+        "id": "minecraft:netherrack",
+        "weight": 40
+      },
+      {
+        "id": "minecraft:rabbit_hide",
+        "weight": 10
+      },
+      {
+        "id": "minecraft:coal",
+        "weight": 3
+      },
+      {
+        "id": "anvilcraft:chocolate_black",
+        "weight": 2
+      }
+    ]
+  },
+  "rotation_speed": 4,
+  "seed_items": [
+    "minecraft:written_book"
+  ],
+  "space": 5,
+  "time": 35
+}

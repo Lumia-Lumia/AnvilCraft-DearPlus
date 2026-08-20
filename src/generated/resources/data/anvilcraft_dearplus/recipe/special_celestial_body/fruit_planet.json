@@ -1,0 +1,194 @@
+{
+  "type": "anvilcraft:special_celestial_body",
+  "axial_tilt": 0.0,
+  "energy": 16,
+  "has_atmosphere": true,
+  "liquid_coverage": "medium",
+  "magnetic_field": 2,
+  "mass": 20,
+  "model": "anvilcraft_dearplus:block/celestial_body/planet_fruit",
+  "name": "fruit_planet",
+  "needs_custom_model": true,
+  "resources": {
+    "biological_items": [
+      {
+        "id": "minecraft:hay_block",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:carrot",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:potato",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:poisonous_potato",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:beetroot",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:chorus_fruit",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:cactus",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:sugar_cane",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:sweet_berries",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:glow_berries",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:apple",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:cocoa_beans",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:melon",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:pumpkin",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:carved_pumpkin",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:sea_pickle",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:nether_wart",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:kelp",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:brown_mushroom",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:red_mushroom",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:crimson_fungus",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:warped_fungus",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:bamboo",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:moss_block",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:torchflower_seeds",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:pitcher_pod",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:weeping_vines",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:twisting_vines",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:vine",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:big_dripleaf",
+        "weight": 1
+      },
+      {
+        "id": "anvilcraft:seeds_pack",
+        "weight": 1
+      }
+    ],
+    "fluids": [
+      {
+        "id": "minecraft:water",
+        "weight": 100
+      }
+    ],
+    "minerals": [
+      {
+        "id": "minecraft:coal_block",
+        "weight": 30
+      },
+      {
+        "id": "minecraft:stick",
+        "weight": 30
+      },
+      {
+        "id": "anvilcraft:flour",
+        "weight": 20
+      },
+      {
+        "id": "minecraft:rooted_dirt",
+        "weight": 5
+      },
+      {
+        "id": "minecraft:bread",
+        "weight": 5
+      },
+      {
+        "id": "minecraft:baked_potato",
+        "weight": 5
+      },
+      {
+        "id": "minecraft:popped_chorus_fruit",
+        "weight": 3
+      },
+      {
+        "id": "anvilcraft:exp_gem_block",
+        "weight": 2
+      }
+    ]
+  },
+  "rotation_speed": 2,
+  "seed_items": [
+    "minecraft:wheat",
+    "minecraft:carrot",
+    "minecraft:potato",
+    "minecraft:beetroot",
+    "minecraft:sweet_berries",
+    "minecraft:glow_berries",
+    "minecraft:cocoa_beans",
+    "minecraft:melon_slice",
+    "minecraft:pumpkin"
+  ],
+  "space": 14,
+  "time": 32
+}

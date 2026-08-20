@@ -1,0 +1,231 @@
+{
+  "type": "anvilcraft:special_celestial_body",
+  "axial_tilt": 0.0,
+  "energy": 16,
+  "has_atmosphere": true,
+  "liquid_coverage": "medium",
+  "magnetic_field": 2,
+  "mass": 20,
+  "model": "anvilcraft_dearplus:block/celestial_body/planet_flower",
+  "name": "flower_planet",
+  "needs_custom_model": true,
+  "resources": {
+    "biological_fluids": [
+      {
+        "id": "anvilcraft:honey",
+        "weight": 100
+      }
+    ],
+    "biological_items": [
+      {
+        "id": "minecraft:dandelion",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:poppy",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:blue_orchid",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:allium",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:azure_bluet",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:red_tulip",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:orange_tulip",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:white_tulip",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:pink_tulip",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:oxeye_daisy",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:cornflower",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:lily_of_the_valley",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:wither_rose",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:torchflower",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:sunflower",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:lilac",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:rose_bush",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:peony",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:pitcher_plant",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:spore_blossom",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:flowering_azalea",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:pink_petals",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:honeycomb",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:tall_grass",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:large_fern",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:fern",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:small_dripleaf",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:glow_lichen",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:lily_pad",
+        "weight": 1
+      }
+    ],
+    "fluids": [
+      {
+        "id": "minecraft:water",
+        "weight": 100
+      }
+    ],
+    "minerals": [
+      {
+        "id": "minecraft:white_dye",
+        "weight": 7
+      },
+      {
+        "id": "minecraft:red_dye",
+        "weight": 7
+      },
+      {
+        "id": "minecraft:yellow_dye",
+        "weight": 7
+      },
+      {
+        "id": "minecraft:blue_dye",
+        "weight": 7
+      },
+      {
+        "id": "minecraft:light_gray_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:gray_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:black_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:brown_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:orange_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:lime_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:green_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:cyan_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:light_blue_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:purple_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:magenta_dye",
+        "weight": 6
+      },
+      {
+        "id": "minecraft:pink_dye",
+        "weight": 6
+      }
+    ]
+  },
+  "rotation_speed": 2,
+  "seed_items": [
+    "minecraft:dandelion",
+    "minecraft:poppy",
+    "minecraft:blue_orchid",
+    "minecraft:allium",
+    "minecraft:azure_bluet",
+    "minecraft:red_tulip",
+    "minecraft:orange_tulip",
+    "minecraft:white_tulip",
+    "minecraft:pink_tulip",
+    "minecraft:oxeye_daisy",
+    "minecraft:cornflower",
+    "minecraft:lily_of_the_valley",
+    "minecraft:sunflower",
+    "minecraft:lilac",
+    "minecraft:rose_bush",
+    "minecraft:peony"
+  ],
+  "space": 14,
+  "time": 32
+}

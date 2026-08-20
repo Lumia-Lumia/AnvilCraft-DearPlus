@@ -7,7 +7,6 @@ import dev.anvilcraft.addon.dearplus.item.RingedAutumniumBroadswordItem;
 import dev.anvilcraft.addon.dearplus.item.property.component.AffixHelper;
 import dev.anvilcraft.addon.dearplus.item.property.component.BladeAffixes;
 import dev.anvilcraft.addon.dearplus.network.AutumniumSwingPacket;
-import com.mojang.authlib.GameProfile;
 import dev.anvilcraft.lib.v2.util.InventoryUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
@@ -188,7 +187,7 @@ public class AddonAffixEvents {
         if (level <= 0) return;
         LivingEntity entity = event.getEntity();
         ItemStack head = getHead(entity);
-        if (head == null || head.isEmpty()) return;
+        if (head.isEmpty()) return;
 
         float chance;
         if (entity instanceof EnderDragon || entity instanceof Player) {
@@ -212,18 +211,20 @@ public class AddonAffixEvents {
 
     /** 根据生物类型获取对应的头颅 */
     private static ItemStack getHead(LivingEntity entity) {
-        if (entity instanceof WitherSkeleton) return new ItemStack(Items.WITHER_SKELETON_SKULL);
-        if (entity instanceof Zombie) return new ItemStack(Items.ZOMBIE_HEAD);
-        if (entity instanceof Skeleton) return new ItemStack(Items.SKELETON_SKULL);
-        if (entity instanceof Creeper) return new ItemStack(Items.CREEPER_HEAD);
-        if (entity instanceof Piglin) return new ItemStack(Items.PIGLIN_HEAD);
-        if (entity instanceof EnderDragon) return new ItemStack(Items.DRAGON_HEAD);
-        if (entity instanceof Player player) {
-            // 带被击杀玩家资料的头（皮肤/名字），而非默认 Steve 头
-            ItemStack head = new ItemStack(Items.PLAYER_HEAD);
-            head.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
-            return head;
-        }
-        return ItemStack.EMPTY;
+        return switch (entity) {
+            case WitherSkeleton ignored -> new ItemStack(Items.WITHER_SKELETON_SKULL);
+            case Zombie ignored -> new ItemStack(Items.ZOMBIE_HEAD);
+            case Skeleton ignored -> new ItemStack(Items.SKELETON_SKULL);
+            case Creeper ignored -> new ItemStack(Items.CREEPER_HEAD);
+            case Piglin ignored -> new ItemStack(Items.PIGLIN_HEAD);
+            case EnderDragon ignored -> new ItemStack(Items.DRAGON_HEAD);
+            case Player player -> {
+                // 带被击杀玩家资料的头（皮肤/名字），而非默认 Steve 头
+                ItemStack head = new ItemStack(Items.PLAYER_HEAD);
+                head.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
+                yield head;
+            }
+            default -> ItemStack.EMPTY;
+        };
     }
 }

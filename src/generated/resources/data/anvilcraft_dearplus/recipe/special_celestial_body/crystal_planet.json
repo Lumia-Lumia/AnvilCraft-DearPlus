@@ -1,0 +1,79 @@
+{
+  "type": "anvilcraft:special_celestial_body",
+  "axial_tilt": 23.5,
+  "energy": 15,
+  "has_atmosphere": true,
+  "liquid_coverage": "medium",
+  "magnetic_field": 2,
+  "mass": 20,
+  "model": "anvilcraft_dearplus:block/celestial_body/planet_crystal",
+  "name": "crystal_planet",
+  "needs_custom_model": true,
+  "resources": {
+    "fluids": [
+      {
+        "id": "minecraft:water",
+        "weight": 100
+      },
+      {
+        "id": "minecraft:powder_snow",
+        "weight": 100
+      }
+    ],
+    "minerals": [
+      {
+        "id": "minecraft:quartz",
+        "weight": 25
+      },
+      {
+        "id": "minecraft:amethyst_shard",
+        "weight": 25
+      },
+      {
+        "id": "minecraft:clay_ball",
+        "weight": 20
+      },
+      {
+        "id": "anvilcraft:lime_powder",
+        "weight": 10
+      },
+      {
+        "id": "anvilcraft:ancient_sea_reef",
+        "weight": 5
+      },
+      {
+        "id": "anvilcraft:quartz_sand",
+        "weight": 5
+      },
+      {
+        "id": "anvilcraft:geode",
+        "weight": 3
+      },
+      {
+        "id": "minecraft:flint",
+        "weight": 2
+      },
+      {
+        "id": "minecraft:pointed_dripstone",
+        "weight": 2
+      },
+      {
+        "id": "minecraft:echo_shard",
+        "weight": 2
+      },
+      {
+        "id": "minecraft:nautilus_shell",
+        "weight": 1
+      }
+    ]
+  },
+  "rotation_speed": 1,
+  "seed_items": [
+    "anvilcraft_dearplus:autumnium_alloy_block",
+    "minecraft:budding_amethyst",
+    "anvilcraft:ancient_sea_reef",
+    "minecraft:conduit"
+  ],
+  "space": 14,
+  "time": 40
+}

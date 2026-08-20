@@ -1,0 +1,169 @@
+{
+  "type": "anvilcraft:special_celestial_body",
+  "axial_tilt": 0.0,
+  "energy": 16,
+  "has_atmosphere": true,
+  "liquid_coverage": "medium",
+  "magnetic_field": 2,
+  "mass": 20,
+  "model": "anvilcraft_dearplus:block/celestial_body/planet_forest",
+  "name": "forest_planet",
+  "needs_custom_model": true,
+  "resources": {
+    "biological_items": [
+      {
+        "id": "minecraft:oak_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:spruce_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:birch_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:jungle_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:acacia_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:dark_oak_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:mangrove_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:cherry_log",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:crimson_stem",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:warped_stem",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:oak_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:spruce_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:birch_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:jungle_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:acacia_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:dark_oak_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:mangrove_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:cherry_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:azalea_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:flowering_azalea_leaves",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:crimson_wart_block",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:warped_wart_block",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:shroomlight",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:apple",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:mangrove_roots",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:hanging_roots",
+        "weight": 1
+      },
+      {
+        "id": "minecraft:dead_bush",
+        "weight": 1
+      }
+    ],
+    "fluids": [
+      {
+        "id": "minecraft:water",
+        "weight": 100
+      }
+    ],
+    "minerals": [
+      {
+        "id": "minecraft:coal_block",
+        "weight": 30
+      },
+      {
+        "id": "minecraft:charcoal",
+        "weight": 30
+      },
+      {
+        "id": "minecraft:mud",
+        "weight": 15
+      },
+      {
+        "id": "anvilcraft:resin",
+        "weight": 15
+      },
+      {
+        "id": "anvilcraft:hardend_resin",
+        "weight": 8
+      },
+      {
+        "id": "minecraft:diamond",
+        "weight": 2
+      }
+    ]
+  },
+  "rotation_speed": 2,
+  "seed_items": [
+    "minecraft:oak_sapling",
+    "minecraft:birch_sapling",
+    "minecraft:spruce_sapling",
+    "minecraft:jungle_sapling",
+    "minecraft:acacia_sapling",
+    "minecraft:dark_oak_sapling",
+    "minecraft:mangrove_propagule",
+    "minecraft:cherry_sapling"
+  ],
+  "space": 14,
+  "time": 32
+}
