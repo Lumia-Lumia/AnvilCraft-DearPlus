@@ -46,5 +46,10 @@
   "anvilcraft_dearplus.configuration.affix_number_style.tooltip": "词条等级显示方式：0 = 混合（≤10 用罗马数字，>10 用阿拉伯数字），1 = 全罗马数字，2 = 全阿拉伯数字",
   "anvilcraft_dearplus.configuration.section.anvilcraft.dearplus.common.toml": "铁砧工艺：鹿+ 通用配置",
   "anvilcraft_dearplus.configuration.section.anvilcraft.dearplus.common.toml.title": "铁砧工艺：鹿+ 通用配置",
+  "screen.anvilcraft.cfa.class.special.flower_planet": "繁花星球",
+  "screen.anvilcraft.cfa.class.special.forest_planet": "茂林星球",
+  "screen.anvilcraft.cfa.class.special.fruit_planet": "稻果星球",
+  "screen.anvilcraft.cfa.class.special.crystal_planet": "晶石星球",
+  "screen.anvilcraft.cfa.class.special.mole_of_moles": "一摩尔鼹鼠",
   "anvilcraft_dearplus.configuration.title": "铁砧工艺：鹿+ 配置"
 }

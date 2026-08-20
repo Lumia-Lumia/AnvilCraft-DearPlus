@@ -20,6 +20,11 @@
 | 6 | 2026-08-15 ~ 08-16 | 代码审查修复（22 项）、攻击 6/7/8/12、共振器耐久 254/攻击 6、飘升机粒子复用本体+飞行同步、**完整重命名 AnvilCraft: DearPlus（mod id→anvilcraft_dearplus、包名/命名空间/手册目录全改）** | 基本完成 |
 | 7（当前） | 2026-08-16 | 会话记录整理：历史会话 jsonl/附属目录/memory 从旧路径 `~/.claude/projects/...-CelestialReforge` 迁移至 `...-DearPlus` 并删除旧目录 | 完成 |
 | 8 | 2026-08-16 | 更新铁砧工艺至 `1.6.0+snapshot.2156`（AnvilLib 同步 `2.0.0+snapshot.506`），修复 `ModRegistries` API 变更导致的启动崩溃 | 完成 |
+| 9 | 2026-08-17 | 代码审查拒绝项归档至交接文档（6.11）、删除 `CODE_REVIEW_REPORT.md` | 完成 |
+| 10 | 2026-08-17 | 1.2.0：锻星砧新增 5 个特殊天体（繁花/茂林/稻果/晶石/鼹鼠）+ 鼹鼠流体 bug 修复 + 资源调整 | 完成 |
+| 11 | 2026-08-18 | 真实横扫崩溃修复（MixinExtras `@WrapOperation` 实例参数）+ 挥空链路事件化（`PlayerInteractEvent.LeftClickEmpty`） | 完成，待玩家实测 |
+| 12 | 2026-08-18 | 更新铁砧工艺至 `1.6.0+snapshot.2169`（AnvilLib 同步 `2.0.0+snapshot.511`） | 完成 |
+| 13 | 2026-08-19 | 大环刀点方块优先触发真实横扫（`LeftClickBlock` 事件 + 保留挖掘） | 完成 |
 
 ---
 
@@ -263,7 +268,7 @@
 
 ### 6.7 代码审查（2026-08-15）
 - 4 组并行 Agent + 全局补充，覆盖全部 70+ 文件
-- 发现 **16 高 + 17 中 + 多项低**隐患，详见根目录 **`CODE_REVIEW_REPORT.md`**（含修复进度核对表 ⬜/🔧/✅）
+- 发现 **16 高 + 17 中 + 多项低**隐患（报告文件已于 2026-08-17 删除；修复见 6.8，拒绝项归档见 6.11）
 - 高优先：H4 双重掷骰数学错误、H5 面板 locked 残留、H1 每 tick 背包扫描、H11 攻击力偏一、H10 词条上限不一致等
 
 ### 6.8 会话 6：代码审查修复（2026-08-15，已全部完成）
@@ -296,8 +301,7 @@
 - 删除 `AddonDatagen` 空 `gatherData` 死代码
 - `RingedAutumniumBroadswordCraftingRecipe` 删冗余 pattern 字段
 
-**决策不改（高 6 + 中 7）**：H1/H2/H3/H9/H15/H16、M4/M5/M8/M9/M13/M14/M15（含版本策略 `[1.6.0,)` 无界、H9 序列化冲突、M4 横扫误伤为预期）
-**暂缓/搁置（H6/H12、M10）**：版本时序/兼容风险项
+**决策不改（高 6 + 中 7）**：H1/H2/H3/H9/H15/H16、M4/M5/M8/M9/M13/M14/M15 —— 完整拒绝项记录（含理由）见 **6.11**，审查报告 `CODE_REVIEW_REPORT.md` 已删除（2026-08-17），以此为准
 
 **会话 6 收尾数值修正**
 - **共振器攻击 10→6**：`ResonatorItem.createAttributes` 实际攻击 = `1+attackDamage+tierBonus`，`BASE_ATTACK_DAMAGE` 7→3（`AutumniumResonatorItem`）
@@ -352,6 +356,112 @@
 - `AbstractProcessRecipe$Property.getOutcomes()` 会对 resultItems 自动生成 `SpawnItem`，自定义 outcome 时**不要**把 results 放入 Property，避免白板产物
 - 无流体配方**不要**用 `hasCauldron: {"fluid": "minecraft:empty"}`（`hasFluid()` 误判 true，JEI 显示空流体槽位）；应缺省 hasCauldron 字段让 `empty()` 生效（`EMPTY_PREDICATE` 匹配空炼药锅且 `hasFluid()`=false）
 - 飘升机/背包飞行：`CREATIVE_FLIGHT` modifier 用 `IPlayerExtension.mayfly()` 驱动（检查 `Abilities.mayfly || 属性值 > 0`）。飘升机飞行若失效，**先排查与其他附属的兼容性**（2026-08-16 实测为环境问题），不要轻易改动 `AutumniumIonocraftItem` 原实现
+
+### 6.11 代码审查拒绝项归档（2026-08-17）
+
+审查报告 `CODE_REVIEW_REPORT.md` 已删除。**拒绝项（决策不改）**归档如下，后续开发以此为准，勿重复评估：
+
+**高严重度（6 项，决策不改）**
+- **H1** `AddonAffixEvents.onPlayerTick` 每 tick 全背包扫描（41 槽 + 组件读取）：与 AnvilCraft 本体「无情」`Merciless.tick` 同款每 tick 全背包扫描设计，保持一致
+- **H2** `ReforgingPanelBlockEntity.tick` 每 tick 多次方块/实体查找（`findCfaController`/`matchesFilter`/`canReforge`）：单次评估为廉价 getter（仅 1 次 `getBlockEntity`），影响可忽略
+- **H3** `TrueSweepHelper.sweepAround` 5×2×5 全量实体扫描 + 每目标完整伤害结算：真实横扫「打一片」为设计卖点，接受密集场景卡顿
+- **H9** `RingedAutumniumBroadswordRepairRecipe` JEI 显示与实际不符（硬编码 result 3 环刀 vs 任意环刀满耐久）：修复方案 `getResultItem=EMPTY` 与 `ItemStack.STREAM_CODEC` 序列化冲突（配方网络同步崩溃），已回退，保持现状
+- **H15** `anvilcraft_dearplus.mixins.json` `defaultRequire=1` 注入点不匹配即加载崩溃：保持崩溃式报错（`require=0` 静默失效更糟）+ 版本范围无界
+- **H16** 版本依赖 `[1.6.0,)` 无界 + 重锻面板大量用 CFA 内部 API（`getEffectiveBodyDataForRendering`/`getPlanetaryResourceSet`/`startSearch`）：保持无界以兼容 AnvilCraft 正式版，接受内部 API 兼容风险
+
+**中严重度（7 项，决策不改）**
+- **M4** 横扫 5×2×5 范围误伤友军/中立/玩家：真实横扫打所有为预期行为（与 H3 一致）
+- **M5** `growDrop`/`applyDecapitator` 新增掉落物 `pickupDelay=0`（原版 10）：影响微小且立即拾取对玩家无害
+- **M8** `AddonTooltipEventListener`（desc 无翻译兜底 / `add(index)` 潜在越界 / `moveEternalToTop` 全局扫 tooltip）：三个子问题当前均不触发或开销可忽略
+- **M9** 大环刀直接写入原版 `#minecraft:swords` 标签：mixin 已拦截偏安附魔，仅外部感知
+- **M13** `ReforgingPanelBlockEntity`（`matchesFilter` 每 tick 4 次 `unmodifiableList` 分配 / `setEmitting` 双重邻居通知 / `getEffectiveBodyDataForRendering` 依赖 CFA 渲染字段）：影响均小，且①②无法有效避免/有风险
+- **M14** `AddonBlocks`/`AddonRecipeHandler` 深度依赖 AnvilCraft 内部 API（`TwoToOneSmithingRecipe`、CFA 方法）：与 H16 版本策略一致
+- **M15** heating/stamping/repair 手写 serializer（`BuiltInRegistries` 非数据包感知、手写 StreamCodec 易错）：手写 serializer 是自定义 outcome 设计的必要部分，当前正确
+
+**低严重度明确「不改」散点**：M3 横扫伤害口径（蓄力≥0.9 才横扫，裸属性即满蓄力伤害）；M6 弓箭远射不触发枭首/豪夺（大环刀为近战，弓箭场景不成立）；`EnchantmentMaxMergeData` 合并后可带互斥附魔（设计决定，需明示）；`AutumniumResonatorItem` 构造未设默认 TOOL 组件（误报，基类 `ResonatorItem` 已设置）。
+
+**暂缓/搁置项（H6/H12/M10，版本时序/兼容风险项）**：按约定**不记录**。
+
+### 6.12 会话 10：1.2.0 锻星砧特殊天体（2026-08-17）
+
+**需求**：参考 AnvilCraft PR #3712 / issue #3715 的特殊天体机制，为锻星砧（CFA）新增 5 个特殊（隐藏）天体，版本号升至 1.2.0。
+
+**机制**：AnvilCraft `SpecialCelestialBodyRecipe` 数据驱动配方（snapshot.2156 已内置该机制，本 mod 只注册配方 + 提供模型/贴图/翻译，不改本体）。玩家在种子格放"种子物品"搜索时，砧子参数（time/space/mass/energy）**与**有效种子物品（每世界由 seedItems 伪随机选 1 个，`worldSeed*31+name.hashCode()*7919`）都匹配则发现隐藏天体。`needsCustomModel=true` 走自定义模型渲染（不用色板变色）。
+
+**5 个天体**（均 `needs_custom_model=true`，模型 `planet_xxx`）：
+
+| 天体 | 配方 name | 砧子 时/空/质/能 | 大气/流体覆盖率 | 磁场/转速/倾角 | 种子 | 矿产/流体/生物 |
+|---|---|---|---|---|---|---|
+| 繁花 | `flower_planet` | 32/14/20/16 | ✅/中 | 2/2/0° | 16 种花 | 16 染料 / 水 / 29 生物 + 蜂蜜 |
+| 茂林 | `forest_planet` | 32/14/20/16 | ✅/中 | 2/2/0° | 8 树苗 | 煤炭块/木炭/泥巴/树脂/硬化树脂/钻石 / 水 / 27 生物 |
+| 稻果 | `fruit_planet` | 32/14/20/16 | ✅/中 | 2/2/0° | 9 作物 | 煤炭块/木棍/面粉/缠根泥土/面包/烤马铃薯/爆裂紫颂果/经验宝石块 / 水 / 31 生物 |
+| 晶石 | `crystal_planet` | 40/14/20/15 | ✅/中 | 2/1/23.5° | 合金块/紫水晶母岩/远古海礁/潮涌核心 | 11 矿产 / 水+细雪 / 无 |
+| 鼹鼠 | `mole_of_moles` | 35/5/1/5 | ❌/低 | 0/4/30° | 成书 | 5 矿产 / **原油+原始物质** / 无 |
+
+**实现**：
+- `AddonRecipeHandler` 新增 `initSpecialCelestialBodies` + `saveSpecialCelestialBody`，模仿本体 `SpecialCelestialBodyRecipeLoader`（`provider.accept(id, recipe, advancement)` + `RecipeUnlockedTrigger` 配方成就）；配方 id = `anvilcraft_dearplus:special_celestial_body/{name}`
+- 模型/贴图：复制 `planet_overworld.json`/`.png` 改名 `planet_{flower,forest,fruit,crystal,mole}` 到 `assets/anvilcraft_dearplus`（模型 textures 引用改本 mod 命名空间）；**2026-08-19 正式美术就位**：5 张 64×64 正式贴图已替换，晶石星球 `planet_crystal` 另换正式晶体模型（11 元素，含 10 个负方块尖刺，UV 取贴图右下角 13.25~15.5 区域）
+- 语言：英文 `screen.anvilcraft.cfa.class.special.{name}`（`AddonLangHandler` 生成 en_us/en_ud）+ 中文（`zh_cn.json` 手动）
+- `gradle.properties` mod_version `1.1.1` → `1.2.0`
+
+**AnvilCraft 资源 id 对照**（易错）：
+- 硬化树脂 = `anvilcraft:hardend_resin`（**hardend 非 hardened**）；黑巧克力 = `anvilcraft:chocolate_black`（非 black_chocolate）；面粉 = `anvilcraft:flour`；经验宝石 = `anvilcraft:exp_gem`、经验宝石块 = `anvilcraft:exp_gem_block`；种子包 = `anvilcraft:seeds_pack`（seeds 复数）；远古海礁 = `anvilcraft:ancient_sea_reef`；石灰粉 = `anvilcraft:lime_powder`；石英砂 = `anvilcraft:quartz_sand`；晶洞 = `anvilcraft:geode`；原油流体 = `anvilcraft:oil`；原始物质流体 = `anvilcraft:primordial_matter`；细雪流体 = `minecraft:powder_snow`；蜂蜜流体 = `anvilcraft:honey`
+
+**鼹鼠流体 bug 修复**（用户实测反馈）：初版把鼹鼠 `fluids` 误写为空列表 → 资源行不显示流体、行星抽取器抽不出流体。已补 `anvilcraft:oil` + `anvilcraft:primordial_matter`。
+
+**避坑新增**：
+- 特殊天体配方 `model` 字段要填**完整资源 id（含冒号）**如 `anvilcraft_dearplus:block/celestial_body/planet_flower`，否则 `SpecialCelestialBodyData.getModelLocation()` 落到 `anvilcraft:block/celestial_body/...` 找不到本 mod 模型
+- 配方 JSON 空列表字段（如无 fluids）会被 Codec 省略，属正常（反序列化 Optional 回退空）
+- **processResources 增量坑**：`./gradlew runData build` 增量构建时 `processResources` 可能不重新执行（疑似 configuration cache / 增量指纹问题），打包到 jar 的是旧 `src/generated` 数据 → 改配方后需加 `--rerun-tasks` 或 `clean`，并核对 `build/resources/main` 内容
+- 天体资源在**发现时**生成并缓存到 NBT，改配方后已发现的天体快照不更新，需重新搜索发现
+
+**工作准则（用户明确要求，2026-08-17）**：
+- **默认不构建 jar、不提交 git**，除非用户明确要求。构建/打包/提交由用户自行处理，AI 只做代码与资源改动 + `runData` 数据生成。
+
+### 6.13 会话 11：真实横扫崩溃修复 + 事件化（2026-08-18）
+
+**玩家崩溃报告**：`IncorrectArgumentCountException: Operation::call! Expected 1 but got 0. Expected types were [Player]`，触发于 `Player.attack` 内 `sweepAttack()` 调用点。环境 = **anvilcraft `1.6.0+snapshot.2166` + dearplus 1.1.1**（玩家 HuHukawaii，末地攻击时崩溃）。
+
+**根因**：`PlayerMixin.skipVanillaSweepEffects`（`@WrapOperation` 包裹 `Player.sweepAttack()`）的 handler 捕获了目标实例（`Player instance` 第一参数），但调用 `original.call()` 时**没把实例传回**。MixinExtras 规则：**handler 第一个参数若是目标实例类型，`original.call` 必须把实例作为第一参数传回**（对照 AnvilCraft `EntityMixin.anvilcraft$fixFallingBlockEntity` 的 `original.call(instance, x, y, z)`）。修复一行：`original.call()` → `original.call(instance)`。
+
+**事件化（用户采纳别的开发者建议）**：验证可行并实施——
+- NeoForge **没有** `AttackAirEvent`，空点事件是 **`PlayerInteractEvent.LeftClickEmpty`**（客户端触发）
+- 用它替代挥空链路的发包 mixin：`AddonAffixEvents.onAttackAir`（主手大环刀 → `PacketDistributor.sendToServer(new AutumniumSwingPacket())`）
+- 删除：`MinecraftAttackMixin`（文件 + mixins.json 注册）、`LivingEntitySweepMixin.sendAttackSwing`、`TrueSweepHelper` 的 `CLIENT_ATTACKING`/`markClientAttacking`/`isClientAttacking`
+- 保留：`LivingEntitySweepMixin.trueSweepOnSwing`（服务端挥空横扫执行，`@Inject` 非崩溃点）、`PlayerMixin` 的命中链路
+- **边界**：命中链路 mixin（`trueSweepOnAttack` 命中横扫、`skipVanillaSweep` 禁用原版横扫）**无法用事件替代**——它们拦截原版 `Player.attack` 攻击流程**内部**的调用，事件（如 `LivingIncomingDamageEvent`）在伤害结算后才触发，不拦截会出现**双横扫**。所以 mixin 不能完全去掉，只能让挥空链路事件化。
+
+**编译**：`compileJava` 通过。**待办**：玩家环境（2166 + 修复后 dearplus）实测确认。
+
+**特殊星球大气层颜色（2026-08-18，暂不做）**：大气颜色由 `energy → Temperature（5 档）→ 固定 5 色`（`CelestialBodyRenderer.getAtmosphereColor`）决定，`SpecialCelestialBodyRecipe` **无颜色字段**。已联系 CFA 开发者加入该功能，**待本体支持后本 mod 再使用**；暂不改 energy（会连带改砧子匹配参数）也不写渲染 mixin（玩家 2166 与编译 2156 渲染内部可能有差异）。
+
+### 6.14 会话 12：更新铁砧工艺至 1.6.0+snapshot.2169（2026-08-18）
+
+**需求**：更新 AnvilCraft 与 AnvilLib 依赖至最新。
+
+**更新**：
+- `gradle/libs.versions.toml`：anvilcraft `1.6.0+snapshot.2156` → `1.6.0+snapshot.2169`；anvillib `2.0.0+snapshot.506` → `2.0.0+snapshot.511`（与 AnvilCraft 2169 **JarJar 内嵌版本一致**，经 POM 确认）
+- workflow：`ci.yml` / `pull_request.yml` 的 `extra-mods` → `anvilcraft:1.21.1-1.6.0+snapshot.2169`
+- `dependencies.gradle` 无需改（`libs.anvillib`/`libs.anvilcraft` 经 version catalog 引用）；mods.toml versionRange 保持 `[1.6.0,)` 无界（H16 决策不改）
+
+**验证**：`compileJava` / `runData` 通过。确认 2169 中：`SpecialCelestialBodyRecipe` 构造器签名与 2156 一致；mixin target 类（`AnvilMenuResult`、`WheelLifecycleEventListener`、`TwoToOneSmithingRecipe` 等）均存在；**大气层颜色字段尚未加入**（仍等待 CFA 开发者）。
+**背景**：玩家崩溃环境是 anvilcraft `1.6.0+snapshot.2166` + anvillib `2.0.0+snapshot.509`（比最新旧 3 个快照）。
+**待办**：真实横扫等 mixin target 的**运行时**匹配需游戏/CI 启动实测确认。
+
+### 6.15 会话 13：大环刀点方块优先触发真实横扫（2026-08-19）
+
+**需求**：大环刀点到方块时**优先触发真实横扫**（而非挖掘），但**保留挖掘能力**。
+
+**方案**（用户确认 A1：横扫 + 挖掘共存）：`AddonAffixEvents.onLeftClickBlock`（`PlayerInteractEvent.LeftClickBlock` 客户端事件，**不取消挖掘**）：
+```java
+if (player.level().isClientSide && 主手 instanceof RingedAutumniumBroadswordItem) {
+    PacketDistributor.sendToServer(new AutumniumSwingPacket());
+    player.swing(InteractionHand.MAIN_HAND);
+}
+```
+链路：点方块 → 发 `AutumniumSwingPacket`（服务端 `markAttackSwing`）+ `player.swing` → 服务端 `LivingEntitySweepMixin.trueSweepOnSwing` 执行横扫。挖掘不受影响（长按仍可挖掉方块，剑速慢）。
+
+**边界**：点方块 = 横扫 + 开始破坏（裂纹），长按挖掉；横扫受攻击蓄力限制（满蓄力才触发）；`LeftClickBlock` 与 `LeftClickEmpty`（点空气）互补覆盖所有左键点击场景。
 
 ## 七、最终功能清单
 
@@ -417,6 +527,9 @@
 22. **`StreamCodec.unit(...)` 编码校验引用相等**：配方运行时创建的新实例与 unit 实例不同会抛 `Can't encode ... expected ...`。无字段类应改用 `StreamCodec.of((buf, v) -> {}, buf -> new X())`（编码写空、解码返回新实例）；`MapCodec.unit` 的 encode 不校验，可安全用于无字段类（九环刀合并 modifier 2026-08-14 已修）。
 23. **AddonConfig 配置格式**（`dev.anvilcraft.lib.v2.config`，`AddonConfig.java`，运行时经 `AnvilCraftDearPlus.CONFIG` 读取）：`@Config(name=MOD_ID)` 类 + 字段 `@Comment("...")`；boolean 直接 `public boolean xxx = false;`；受限整数加 `@BoundedDiscrete(max=, min=)`；字符串 `public String xxx = "";`（模板自带的 `logDirtBlock`/`magicNumber`/`magicNumberIntroduction` 示例已删除，仅保留 `affixNumberStyle`）。词条等级罗马/阿拉伯显示由 `util/AffixNumberFormat` 处理（混合/全罗马/全阿拉伯）。
 19. **模型体积差异 = 格式**：Blockbench 紧凑单行 vs 展开多行（每个数组元素一行）可差近一倍；压成紧凑格式（数组内联、面单行）能缩小文件且 JSON 合法，注意**不能有尾逗号**。
+24. **`runData` 后 `build` 需强制重跑资源**：`./gradlew runData build` 增量时 `processResources` 可能不重新执行（configuration cache/增量指纹问题），jar 打包旧 `src/generated` 数据。改配方/语言后加 `--rerun-tasks` 或 `clean`，并核对 `build/resources/main` 内容（2026-08-17 实测）。
+25. **MixinExtras `@WrapOperation` 实例参数**：handler 捕获目标实例（第一个参数为目标实例类型）后，`original.call()` 必须把**实例作为第一参数**传回（如 `original.call(instance, 其他方法参数...)`），否则运行时报 `IncorrectArgumentCountException`（2026-08-18 实测，对照 AnvilCraft `EntityMixin.anvilcraft$fixFallingBlockEntity`）。
+26. **NeoForge 空点事件**：玩家左键点击空气（空点）事件是 `PlayerInteractEvent.LeftClickEmpty`（客户端触发）；NeoForge **没有** `AttackAirEvent`（2026-08-18 确认）。
 
 ---
 
@@ -431,14 +544,14 @@
 - 重锻面板：`block/ReforgingPanelBlock.java`、`block/entity/ReforgingPanelBlockEntity.java`、`inventory/ReforgingFilter(Data).java`、`inventory/ReforgingPanelMenu.java`、`client/gui/screen/ReforgingPanelScreen.java`、`init/ModBlockEntities.java`、`init/ModMenuTypes.java`
 - 重锻面板资源：`blockstates/reforging_panel.json`、`models/`、`textures/`、`assets/anvilcraft/ageratum/zh_cn|en_us/173_dearplus/`
 - ageratum 手册（2026-08-14 整理完整，`assets/anvilcraft/ageratum/zh_cn|en_us/173_dearplus/`）：`index.md`（总览）+ `000_alloy`（秋枫合金/合金块）+ `001_resonator` + `002_ionocraft` + `003_broadsword`（四档属性/锻造升级/真实横扫/亡灵特攻）+ `004_affixes`（词条）+ `005_reforging_panel`（重锻面板，会话 6 由 001 移至末章）
-- 代码审查报告（2026-08-15）：`CODE_REVIEW_REPORT.md`（根目录）——16 高 + 17 中 + 多项低严重度隐患，含修复进度核对表（⬜/🔧/✅），修复时可对照勾选
+- 代码审查报告（2026-08-15）：`CODE_REVIEW_REPORT.md` 已于 2026-08-17 **删除**；拒绝项（决策不改）归档见 6.11
 
 ---
 
 ## 十、当前状态与待办
 
 - ✅ 核心功能全部实现并验证（编译/服务器/客户端启动通过）
-- ✅ 铁砧工艺依赖已更新至 `1.6.0+snapshot.2156`（AnvilLib 同步 `2.0.0+snapshot.506`，与内嵌版本匹配；workflow extra-mods/发布依赖/mods.toml versionRange 均已同步；2026-08-13 更新至 2144，2026-08-16 更新至 2156）
+- ✅ 铁砧工艺依赖已更新至 `1.6.0+snapshot.2169`（AnvilLib 同步 `2.0.0+snapshot.511`，与内嵌版本匹配；workflow extra-mods/mods.toml versionRange 均已同步；2026-08-13→2144、08-16→2156、08-18→2169）
 - ✅ 4 把刀模型已应用，GUI 显示当前值：`rotation [0,20,0], translation [-0.7,-0.55,0], scale 0.65`
 - ✅ 已补充会话 `3eb0b138`（基础物品 + 重锻面板）全部需求至本交接文档
 - ✅ 4 把刀物品栏渲染已确认（2026-08-13）
@@ -452,9 +565,12 @@
 - ✅ 逐鹿设定重构完成（2026-08-14）：`VYING` 带等级（上限 10）、稀有掉落概率 `P+(1-P)×L/10`（P=0 时 P×L）、罗马数字/MAX 显示、config 可选
 - ✅ 九环刀词条叠加机制完成（2026-08-14）：超限合金二合一 + 铁砧合并（永恒/附魔取最大/逐鹿升级/REPAIR_COST 清零）
 - ✅ ageratum 手册整理完整 + 代码审查报告导出（2026-08-15）
-- ✅ 代码审查修复完成（2026-08-15，会话 6）：8 高 + 9 中 + 5 低共 22 项，详见 6.8 与 `CODE_REVIEW_REPORT.md` 核对表
+- ✅ 代码审查修复完成（2026-08-15，会话 6）：8 高 + 9 中 + 5 低共 22 项，详见 6.8
 - ✅ 大环刀实际攻击 6/7/8/12（2026-08-15）：modifier 公式修正，注释/手册/交接文档同步
 - ✅ 共振器耐久 254、攻击 6（2026-08-15）：耐久避开词条上限 255 撞车；攻击按 `ResonatorItem.createAttributes` 公式修正
 - ✅ 飘升机粒子复用本体 `ModParticles.IONOCRAFT_BACKPACK_EXHAUST`（2026-08-15），删除自建粒子类型/类/贴图
 - ✅ 飘升机多人粒子飞行同步（2026-08-15）：S2C `AutumniumIonocraftFlyingPacket` + 客户端 `SYNCED_FLYING_PLAYERS`（照搬本体背包机制）
-- ⏳ **待办**：代码审查隐患修复，详见根目录 `CODE_REVIEW_REPORT.md` 进度核对表。**2026-08-15（会话 6）已修 8 高 + 9 中 + 5 低**；其余 6 高 + 7 中决策不改、2 高（H6/H12）+ 1 中（M10）暂缓/搁置
+- ✅ 代码审查拒绝项归档（2026-08-17）：**2026-08-15（会话 6）已修 8 高 + 9 中 + 5 低**；其余 6 高 + 7 中**决策不改**（拒绝项，含理由归档见 6.11，审查报告 `CODE_REVIEW_REPORT.md` 已删除）
+- ✅ 1.2.0 锻星砧特殊天体完成（2026-08-17）：5 个隐藏天体（繁花/茂林/稻果/晶石/鼹鼠），含鼹鼠流体 bug 修复与资源调整，详见 6.12
+- ✅ 特殊天体 ageratum 手册（2026-08-20）：新增 `006_special_celestial_bodies.md`（中英），每星球含天体名称/砧子线索（谜语式不直接给参数）/种子物品（38 个全列）/天体概述
+- ✅ 工作准则（2026-08-17）：**默认不构建 jar、不提交 git**，除非用户明确要求（构建/提交由用户自行处理）

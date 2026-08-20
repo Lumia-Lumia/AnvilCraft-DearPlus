@@ -46,5 +46,10 @@
   "item.anvilcraft_dearplus.ringed_autumnium_broadsword_7.desc": "A Chinese greatsword with the True Sweep property",
   "item.anvilcraft_dearplus.ringed_autumnium_broadsword_9": "9-Ringed Autumnium Broadsword",
   "item.anvilcraft_dearplus.ringed_autumnium_broadsword_9.desc": "A Chinese greatsword with the True Sweep property",
-  "itemGroup.anvilcraft_dearplus.addon_items": "AnvilCraft: DearPlus"
+  "itemGroup.anvilcraft_dearplus.addon_items": "AnvilCraft: DearPlus",
+  "screen.anvilcraft.cfa.class.special.crystal_planet": "Crystal Planet",
+  "screen.anvilcraft.cfa.class.special.flower_planet": "Flower Planet",
+  "screen.anvilcraft.cfa.class.special.forest_planet": "Forest Planet",
+  "screen.anvilcraft.cfa.class.special.fruit_planet": "Fruit Planet",
+  "screen.anvilcraft.cfa.class.special.mole_of_moles": "A Mole of Moles"
 }

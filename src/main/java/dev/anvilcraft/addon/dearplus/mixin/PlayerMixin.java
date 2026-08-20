@@ -102,7 +102,8 @@ public abstract class PlayerMixin {
     )
     private void skipVanillaSweepEffects(Player instance, Operation<Void> original) {
         if (!(instance.getMainHandItem().getItem() instanceof RingedAutumniumBroadswordItem)) {
-            original.call();
+            // MixinExtras：handler 捕获了目标实例后，original.call 需把实例作为第一参数传回
+            original.call(instance);
         }
     }
 }

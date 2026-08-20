@@ -70,5 +70,12 @@ public class AddonLangHandler {
             "A Chinese greatsword with the True Sweep property");
         provider.add("item.anvilcraft_dearplus.ringed_autumnium_broadsword_9.desc",
             "A Chinese greatsword with the True Sweep property");
+
+        // Special celestial bodies (CFA interface reads screen.anvilcraft.cfa.class.special.{name})
+        provider.add("screen.anvilcraft.cfa.class.special.flower_planet", "Flower Planet");
+        provider.add("screen.anvilcraft.cfa.class.special.forest_planet", "Forest Planet");
+        provider.add("screen.anvilcraft.cfa.class.special.fruit_planet", "Fruit Planet");
+        provider.add("screen.anvilcraft.cfa.class.special.crystal_planet", "Crystal Planet");
+        provider.add("screen.anvilcraft.cfa.class.special.mole_of_moles", "A Mole of Moles");
     }
 }

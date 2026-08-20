@@ -4,7 +4,7 @@ navigation:
   icon: "anvilcraft_dearplus:autumnium_alloy"
 ---
 
-Hello! This is **YaanChio Lumia**.
+Hello! This is **YanChio Lumia**.
 
 *DearPlus* is an addon for *AnvilCraft* themed around the power of **autumn**. All Autumnium items are crafted from <ref item="anvilcraft_dearplus:autumnium_alloy"/> and come with unique abilities:
 
@@ -23,3 +23,4 @@ Autumnium tools also feature a unique **affix** system: Tranquil, Vying, Chopper
 - [Ringed Autumnium Broadsword](003_broadsword.md)
 - [Affixes](004_affixes.md)
 - [Reforging Panel](005_reforging_panel.md)
+- [Special Celestial Bodies](006_special_celestial_bodies.md) - the five hidden planets of the Forging Anvil

@@ -6,7 +6,7 @@ navigation:
 
 你好！这里是**言秋Lumia**。
 
-《鹿+》是《铁砧工艺》的附属模组，以**秋枫之力**为主题。所有秋枫物品都由<ref item="anvilcraft_dearplus:autumnium_alloy"/>制成，并带有独特的能力：
+《鹿+》是《铁砧工艺》的附属模组，以**秋之魔力**为主题。所有秋枫物品都由<ref item="anvilcraft_dearplus:autumnium_alloy"/>制成，并带有独特的能力：
 
 - **秋枫共振器**——以共振之力采矿的挖掘工具
 - **秋枫飘升机**——穿戴即可翱翔天空的飞行装备
@@ -23,3 +23,4 @@ navigation:
 - [秋枫大环刀](003_broadsword.md)
 - [词条](004_affixes.md)
 - [重锻面板](005_reforging_panel.md)
+- [特殊天体](006_special_celestial_bodies.md)——锻星砧中隐藏的五个星球

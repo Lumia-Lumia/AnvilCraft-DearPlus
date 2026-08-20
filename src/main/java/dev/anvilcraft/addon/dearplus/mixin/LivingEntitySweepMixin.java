@@ -1,7 +1,6 @@
 package dev.anvilcraft.addon.dearplus.mixin;
 
 import dev.anvilcraft.addon.dearplus.item.RingedAutumniumBroadswordItem;
-import dev.anvilcraft.addon.dearplus.network.AutumniumSwingPacket;
 import dev.anvilcraft.addon.dearplus.util.TrueSweepHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -11,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,21 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * 真实横扫：秋枫大环刀攻击挥空（点击空气）时也触发横扫之刃效果，伤害与直击相同。
+ * 客户端攻击挥空的通知已由 {@code AddonAffixEvents.onAttackAir}（PlayerInteractEvent.LeftClickEmpty）发包完成，
+ * 此处只负责服务端执行挥空横扫伤害。
  */
 @Mixin(LivingEntity.class)
 public abstract class LivingEntitySweepMixin {
-    /**
-     * 客户端：左键攻击挥刀时，通知服务端标记本次挥刀为攻击挥空。
-     */
-    @Inject(method = "swing(Lnet/minecraft/world/InteractionHand;Z)V", at = @At("HEAD"))
-    private void sendAttackSwing(InteractionHand hand, boolean updateSelf, CallbackInfo ci) {
-        // 只有大环刀玩家需要通知服务端攻击挥空，其他武器不发送，减少无意义网络包
-        if (TrueSweepHelper.isClientAttacking(((LivingEntity) (Object) this).level().getGameTime())
-            && ((LivingEntity) (Object) this).getMainHandItem().getItem() instanceof RingedAutumniumBroadswordItem) {
-            PacketDistributor.sendToServer(new AutumniumSwingPacket());
-        }
-    }
-
     @Inject(method = "swing(Lnet/minecraft/world/InteractionHand;)V", at = @At("HEAD"))
     private void trueSweepOnSwing(InteractionHand hand, CallbackInfo ci) {
         if (!((Object) this instanceof Player self)) return;

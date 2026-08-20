@@ -29,9 +29,6 @@ public final class TrueSweepHelper {
      */
     public static final ThreadLocal<Long> ATTACKING = new ThreadLocal<>();
 
-    /** 客户端：标记当前是否在 Minecraft.startAttack（左键攻击）中（存储 gameTime，同 tick 有效） */
-    public static final ThreadLocal<Long> CLIENT_ATTACKING = new ThreadLocal<>();
-
     /** 服务端：标记本次攻击（同 tick 有效） */
     public static void markAttacking(Player player) {
         ATTACKING.set(player.level().getGameTime());
@@ -41,17 +38,6 @@ public final class TrueSweepHelper {
     public static boolean isAttacking(Player player) {
         Long tick = ATTACKING.get();
         return tick != null && tick == player.level().getGameTime();
-    }
-
-    /** 客户端：标记本次左键攻击（同 tick 有效） */
-    public static void markClientAttacking(long gameTime) {
-        CLIENT_ATTACKING.set(gameTime);
-    }
-
-    /** 客户端：当前是否正处于左键攻击中（与标记同 tick） */
-    public static boolean isClientAttacking(long gameTime) {
-        Long tick = CLIENT_ATTACKING.get();
-        return tick != null && tick == gameTime;
     }
 
     /** 服务端：记录玩家最近一次「攻击挥刀」（本 tick 有效），用于排除交互/丢物品的挥刀 */

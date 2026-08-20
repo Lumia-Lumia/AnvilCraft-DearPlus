@@ -6,10 +6,12 @@ import dev.anvilcraft.addon.dearplus.item.AutumniumIonocraftItem;
 import dev.anvilcraft.addon.dearplus.item.RingedAutumniumBroadswordItem;
 import dev.anvilcraft.addon.dearplus.item.property.component.AffixHelper;
 import dev.anvilcraft.addon.dearplus.item.property.component.BladeAffixes;
+import dev.anvilcraft.addon.dearplus.network.AutumniumSwingPacket;
 import com.mojang.authlib.GameProfile;
 import dev.anvilcraft.lib.v2.util.InventoryUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -31,7 +33,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -62,6 +66,34 @@ public class AddonAffixEvents {
             for (ItemStack stack : InventoryUtil.getItems(serverPlayer.getInventory(), AffixHelper::hasTranquil)) {
                 AffixHelper.absorbEnchantments(stack);
             }
+        }
+    }
+
+    /**
+     * 真实横扫（挥空）：玩家左键点击空气（空点）且主手为大环刀时，通知服务端标记本次攻击挥空，
+     * 由服务端 {@code LivingEntitySweepMixin.trueSweepOnSwing} 执行挥空横扫。
+     * 用 NeoForge 空点事件 {@link PlayerInteractEvent.LeftClickEmpty} 替代监听挥刀的 mixin。
+     */
+    @SubscribeEvent
+    public static void onAttackAir(PlayerInteractEvent.LeftClickEmpty event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide
+            && player.getMainHandItem().getItem() instanceof RingedAutumniumBroadswordItem) {
+            PacketDistributor.sendToServer(new AutumniumSwingPacket());
+        }
+    }
+
+    /**
+     * 真实横扫（点方块优先）：大环刀左键点击方块时也触发横扫（挥空），
+     * 同时**保留挖掘能力**——不取消挖掘，长按仍可挖掉方块（剑速慢）。
+     */
+    @SubscribeEvent
+    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide
+            && player.getMainHandItem().getItem() instanceof RingedAutumniumBroadswordItem) {
+            PacketDistributor.sendToServer(new AutumniumSwingPacket());
+            player.swing(InteractionHand.MAIN_HAND);
         }
     }
 

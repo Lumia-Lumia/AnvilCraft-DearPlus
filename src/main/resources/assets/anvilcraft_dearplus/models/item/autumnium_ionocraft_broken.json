@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "anvilcraft_dearplus:item/autumnium_ionocraft"
+    "layer0": "anvilcraft_dearplus:item/autumnium_ionocraft_broken"
   }
 }
